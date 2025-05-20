@@ -22,6 +22,11 @@ class Cell{
         // valores devem estar entre 1 e 9
         void set_value(int value);
 
+        // torna a célula fixa
+        void fix();
+
+        // desfixa uma célula
+        void unfix();
 };
 
 
