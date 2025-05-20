@@ -10,13 +10,23 @@ class Cell{
         bool fixed;
 
     public:
+        Cell();
+
+        Cell(int value, bool fixed);
+
         // retorna o valor da célula
-        int check_value() const;
+        int get_value() const;
 
         // altera o valor da célula
         // se for uma célula fixa não deve altera-la
-        void set_value();
+        // valores devem estar entre 1 e 9
+        void set_value(int value);
 
+        // torna a célula fixa
+        void fix();
+
+        // desfixa uma célula
+        void unfix();
 };
 
 
