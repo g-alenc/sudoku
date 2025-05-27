@@ -1,14 +1,14 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
-#include <array>
+#include <vector>
 #include "cell.hpp"
 
 using namespace std;
 
 class Board{
     private:
-        // array de arrays de celulas que formam o tabuleiro
-        array<array<Cell, 9>, 9> board;
+        // vector de vectors de celulas que formam o tabuleiro
+        vector<vector<Cell>> grid;
 
     public:
         Board();
