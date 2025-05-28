@@ -18,3 +18,9 @@ void Board::reset_board(){
         }
     }
 }
+
+
+void Board::change_value(int x, int y, int value){
+    grid[x][y].set_value(value);
+}
+
