@@ -19,8 +19,20 @@ void Board::reset_board(){
     }
 }
 
-
 void Board::change_value(int x, int y, int value){
     grid[x][y].set_value(value);
 }
+
+int Board::cells_filled() const{
+    int counter = 0;
+    
+    for (auto& line : grid){
+        for (Cell cell : line){
+            if(cell.get_value() != 0) counter ++;
+        }
+    }
+
+    return counter;
+}
+
 

@@ -15,6 +15,9 @@ int main(){
     board.change_value(5, 1, 8);
 
     cout << cell.get_value() << endl;
+    
+    cout << board.cells_filled() << endl;
+
 
     return 0;
 }
