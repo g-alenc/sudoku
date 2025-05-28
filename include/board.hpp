@@ -8,11 +8,11 @@ using namespace std;
 class Board{
     private:
         // vector de vectors de celulas que formam o tabuleiro
-        vector<vector<Cell>> grid;
-
-    public:
+        
+        public:
+        vector<vector<Cell>> grid;  
         Board();
-
+        
         // retorna o numero de células preenchidas
         int cells_filled() const;
 

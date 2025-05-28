@@ -9,6 +9,8 @@ int main(){
 
     Board board;
     Cell cell = board.grid[5][1];
+    
+    cout << cell.get_value() << endl;
 
     return 0;
 }

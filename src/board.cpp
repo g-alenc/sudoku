@@ -2,7 +2,13 @@
 #include "cell.hpp"
 
 Board::Board(){
-
+    grid.resize(9);
+    for (int i = 0; i < 9; i++){
+        for (int j = 0; j < 9; j++){
+            Cell cell;
+            grid[i].push_back(cell);
+        }
+    }
 }
 
 void Board::reset_board(){
