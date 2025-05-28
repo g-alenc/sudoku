@@ -7,8 +7,8 @@ using namespace std;
 
 int main(){
 
-    Board board();
-    Cell cell = board[5][1];
+    Board board;
+    Cell cell = board.grid[5][1];
 
     return 0;
 }
