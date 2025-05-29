@@ -22,6 +22,8 @@ class Cell{
         // valores devem estar entre 1 e 9
         void set_value(int value);
 
+        bool is_fixed() const;
+
         // torna a célula fixa
         void fix();
 

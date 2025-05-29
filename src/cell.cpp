@@ -28,3 +28,15 @@ void Cell::set_value(int value){
 int Cell::get_value() const{
     return this->value;
 };
+
+bool Cell::is_fixed() const{
+    return fixed;
+}
+
+void Cell::fix(){
+    fixed = true;
+}
+
+void Cell::unfix(){
+    fixed = false;
+}
