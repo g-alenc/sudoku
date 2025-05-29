@@ -1,6 +1,6 @@
 # 📚 Histórias dos usuários 📚
 ## Projeto "Sudoku" 🧠
-Aqui trazemos 5 histórias de jogadores que gostariam de mais funcionalidades no Projeto "Sudoku" feito na linguagem C++.
+Aqui trazemos 6 histórias de jogadores que gostariam de mais funcionalidades no Projeto "Sudoku" feito na linguagem C++.
 
 
 ### Usuário 1: "Dificuldade do jogo" ⚠️
@@ -10,7 +10,7 @@ Aqui trazemos 5 histórias de jogadores que gostariam de mais funcionalidades no
 
 ### Usuário 2: "Salvamento" 💾
 **Como** um jogador,
-**Quero** uma opção de para salvar meus jogos,
+**Quero** uma opção para salvar meus jogos,
 **Para que** eu possa retomar os meus jogos começados anteriormente.
 
 ### Usuário 3: "Cronometro" ⏱️
@@ -21,9 +21,14 @@ Aqui trazemos 5 histórias de jogadores que gostariam de mais funcionalidades no
 ### Usuário 4: "Ajudas" 💡
 **Como** um jogador,
 **Quero** pedir dicas,
-**Para que** eu possa completar meu jogo, caso eu esteja com muita dificuldade.
+**Para que** facilite para mim, caso eu esteja com muita dificuldade.
 
 ### Usuário 5: "Undo(Desfazer)" ↩️
 **Como** um jogador,
 **Quero** poder voltar minhas jogadas,
 **Para que** eu consiga voltar atrás de forma mais prática.
+
+### Usuário 6: "Limpar" 🧹
+**Como** um jogador,
+**Quero** poder limpar todas minhas jogadas,
+**Para que** eu reinicie o meu tabuleiro mais rápido.
