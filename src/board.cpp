@@ -12,9 +12,9 @@ Board::Board(){
 }
 
 void Board::reset_board(){
-    for (auto& line : grid){
-        for (Cell& cell : line){
-            if(! cell.is_fixed()) cell.set_value(0);
+    for (int x = 0; x < 9; x++){
+        for (int y = 0; y < 9; y++){
+            if(! grid[x][y].is_fixed()) grid[x][y].set_value(0);
         }
     }
 }

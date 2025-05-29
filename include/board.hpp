@@ -30,5 +30,4 @@ class Board{
 
 };
 
-
 #endif

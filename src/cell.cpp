@@ -13,16 +13,13 @@ Cell::Cell(int value, bool fixed){
     this->fixed = fixed;
 };
 
-void Cell::set_value(int value){
-    if (not fixed){
-        // retorna um erro se o valor for menor do que 1 ou maior do que 9
-        if (value < 1 || value > 9) throw runtime_error("Valor invalido para a célula");
-        else this->value = value;
-    }
+bool Cell::set_value(int value){
+    
+    if (this->fixed) return false;
+    if (value < 0 | value > 9) return 0;
 
-    else{
-        throw runtime_error("Tentando mudar o valor de uma célula fixa");
-    }
+    this->value = value;
+    return true;
 };
 
 int Cell::get_value() const{
