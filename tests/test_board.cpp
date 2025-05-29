@@ -12,12 +12,17 @@ int main(){
 
     cout << cell.get_value() << endl;
 
-    board.change_value(5, 1, 8);
+        for (auto& line : board.grid){
+        for (Cell& cell : line){
+            cell.set_value(5);
+        }
+    }
 
     cout << cell.get_value() << endl;
     
     cout << board.cells_filled() << endl;
 
+    cout << board.is_completed() << endl;
 
     return 0;
 }

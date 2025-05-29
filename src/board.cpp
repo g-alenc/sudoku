@@ -35,4 +35,13 @@ int Board::cells_filled() const{
     return counter;
 }
 
+bool Board::is_completed() const{
+    for (auto& line : grid){
+        for (Cell cell : line){
+            if (cell.get_value() == 0) return false;
+        }
+    }
+
+    return true;
+}
 
