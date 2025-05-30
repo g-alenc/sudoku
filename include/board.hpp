@@ -1,6 +1,7 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 #include <array>
+#include <string>
 #include "cell.hpp"
 
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 class Board{
     private:
         // array de arrays de celulas que formam o tabuleiro
-        array<array<Cell, 9>, 9> board;
+        array<array<Cell, 9>, 9> grid;
 
     public:
         Board();
@@ -27,6 +28,9 @@ class Board{
 
         // edita o valor de uma celula dada uma posição
         int change_value(int x, int y, int value);
+
+        // carrega um grid de um arquivo .txt
+        bool load_grid(string path);
 
 };
 
