@@ -39,7 +39,7 @@ void print_grid(const Board& board) {
 }
 
 int main(){
-    #// cria o tabuleiro
+    // cria o tabuleiro
     Board board;
     print_grid(board);
 
@@ -48,7 +48,7 @@ int main(){
     board.load_grid(grid_path);
     print_grid(board);
 
-    cout << board.cells_filled() << endl;
+    cout << "Numero de celulas preenchidas: " << board.cells_filled();
 
     // reinicia o grid
     board.reset_board();
