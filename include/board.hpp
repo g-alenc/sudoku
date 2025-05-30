@@ -1,6 +1,7 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 #include <vector>
+#include <string>
 #include "cell.hpp"
 
 using namespace std;
@@ -27,6 +28,9 @@ class Board{
 
         // edita o valor de uma celula dada uma posição
         void change_value(int x, int y, int value);
+
+        // carrega um grid de um arquivo .txt
+        bool load_grid(string path);
 
 };
 

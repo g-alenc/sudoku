@@ -1,6 +1,7 @@
 #include "../include/board.hpp"
 #include "../include/cell.hpp"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -8,11 +9,8 @@ int main(){
 
     Board board;
 
-    for (auto& line : board.grid){
-        for (Cell& cell : line){
-            cell.set_value(5);
-        }
-    }
+    string grid_path = "tests/grid.txt";
+    board.load_grid(grid_path);
     
     cout << board.cells_filled() << endl;
     cout << board.is_completed() << endl;
