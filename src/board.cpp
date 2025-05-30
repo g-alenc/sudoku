@@ -91,3 +91,37 @@ bool Board::load_grid(string path) {
     file.close();
     return true;
 }
+
+string Board::grid_to_string(){
+    string grid_string;
+
+    for (int x = 0; x < 9; ++x) {
+        for (int y = 0; y < 9; ++y) {
+            int value = grid[x][y].get_value(); 
+            grid_string = grid_string + to_string(value);
+
+            string fixed = "l";
+            if(grid[x][y].is_fixed()) fixed = "f";
+            grid_string = grid_string + fixed;    
+        }
+    }
+    return grid_string;
+}
+
+bool Board::persist_grid(string path){
+    const string grid_string = grid_to_string();
+
+    ofstream file(path);
+
+    if (!file.is_open()) {
+        cerr << "Error: Could not open file " << path << endl;
+        return false;
+    }
+
+    file << grid_string << endl;
+
+
+    file.close();
+    return true;
+}
+

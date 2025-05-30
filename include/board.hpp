@@ -10,9 +10,12 @@ class Board{
     private:
         // vector de vectors de celulas que formam o tabuleiro
         
+        // transforma o grid em string
+        string grid_to_string();
+        
         public:
-        vector<vector<Cell>> grid;  
         Board();
+        vector<vector<Cell>> grid;  
         
         // retorna o numero de células preenchidas
         int cells_filled() const;
@@ -32,6 +35,8 @@ class Board{
         // carrega um grid de um arquivo .txt
         bool load_grid(string path);
 
+        //salva o estado atual do tabuleiro
+        bool persist_grid(string path);
 };
 
 #endif
