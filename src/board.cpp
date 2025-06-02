@@ -161,7 +161,7 @@ bool Board::check_box(int n) {
             for(int i2 = 0; i2 < 3; i2++) {
                 for(int j2 = 0; j2 < 3; j2++) {
                     if (i1 != i2 || j1 != j2) {
-                        if (grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1]==grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2]) {
+                        if (grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1].getvalue()==grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].getvalue()) {
                             return false;
                         }
                     }
