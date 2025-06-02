@@ -132,7 +132,7 @@ bool Board::persist_grid(string path){
 bool Board::check_line(int n) {
     for (int j1 = 0; j1 < 9; j1++) {
         for (int j2 = 0; j2 < 9; j2++) {
-            if (grid[n-1][j1] == grid[n-1][j2] && j1 != j2) {
+            if (grid[n][j1].get_value() == grid[n][j2].get_value() && j1 != j2) {
                 return false;
             }
         } 
@@ -144,7 +144,7 @@ bool Board::check_line(int n) {
 bool Board::check_column(int n) {
     for (int i1 = 0; i1 < 9; i1++) {
         for (int i2 = 0; i2 < 9; i2++) {
-            if (grid[i1][n-1] == grid[i2][n-1] && i1 != i2) {
+            if (grid[i1][n].get_value() == grid[i2][n].get_value() && i1 != i2) {
                 return false;
             }
         } 
@@ -161,7 +161,7 @@ bool Board::check_box(int n) {
             for(int i2 = 0; i2 < 3; i2++) {
                 for(int j2 = 0; j2 < 3; j2++) {
                     if (i1 != i2 || j1 != j2) {
-                        if (grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1].getvalue()==grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].getvalue()) {
+                        if (grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1].get_value()==grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].get_value()) {
                             return false;
                         }
                     }
@@ -172,9 +172,9 @@ bool Board::check_box(int n) {
     return true;
 }
 
-bool Board::is_valid_board() {
+bool Board::is_valid_board(Board board) {
     for (int i = 0; i < 9; i++) {
-        if(!check_line(i) || !check_column(i) || !check_box(i)) {
+        if(!board.check_line(i) || !board.check_column(i) || !board.check_box(i)) {
             return false;
         }
     }

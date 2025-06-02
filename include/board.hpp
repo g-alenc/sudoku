@@ -48,7 +48,7 @@ class Board{
         bool check_box(int n);
 
         //checa se o tabuleiro é valido com as ultimas funções
-        bool is_valid_board();
+        bool is_valid_board(Board b);
 };
 
 #endif

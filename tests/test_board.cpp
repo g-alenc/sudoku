@@ -54,5 +54,12 @@ int main(){
     board.reset_board();
     print_grid(board);
 
+
+    if (board.is_valid_board(board)) {
+        cout << "Válido" << endl;
+    } else {
+        cout << "Inválido" << endl;
+    }
+
     return 0;
 }
