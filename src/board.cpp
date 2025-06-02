@@ -174,7 +174,7 @@ bool Board::check_box(int n) {
 
 bool Board::is_valid_board() {
     for (int i = 0; i < 9; i++) {
-        if(!check_line || !check_column || !check_box) {
+        if(!check_line(i) || !check_column(i) || !check_box(i)) {
             return false;
         }
     }
