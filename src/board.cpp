@@ -153,4 +153,22 @@ bool Board::check_column(int n) {
     return true;
 }
 
-bool Board::check_box(int n) {}
+bool Board::check_box(int n) {
+    int primeiro_valor_linha = n_ / 3;
+    int primeiro_valor_coluna = n_ % 3;
+    for(i1 = 0; i1 < 3; i1++) {
+        for(j1 = 0; j1 < 3; j1++) {
+            for(i2 = 0; i2 < 3; i2++) {
+                for(j2 = 0; j2 < 3; j2++) {
+                    if (i1 != i2 || j1 != j2) {
+                        if (grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1]==grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+    
