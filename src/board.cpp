@@ -130,8 +130,8 @@ bool Board::persist_grid(string path){
 }
 
 bool Board::check_line(int n) {
-    for (j1 = 0; j1 < 9; j1++) {
-        for (j2 = 0; j2 < 9; j2++) {
+    for (int j1 = 0; j1 < 9; j1++) {
+        for (int j2 = 0; j2 < 9; j2++) {
             if (grid[n-1][j1] == grid[n-1][j2] && j1 != j2) {
                 return false;
             }
@@ -142,8 +142,8 @@ bool Board::check_line(int n) {
 }
 
 bool Board::check_column(int n) {
-    for (i1 = 0; i1 < 9; i1++) {
-        for (i2 = 0; i2 < 9; i2++) {
+    for (int i1 = 0; i1 < 9; i1++) {
+        for (int i2 = 0; i2 < 9; i2++) {
             if (grid[i1][n-1] == grid[i2][n-1] && i1 != i2) {
                 return false;
             }
@@ -154,12 +154,12 @@ bool Board::check_column(int n) {
 }
 
 bool Board::check_box(int n) {
-    int primeiro_valor_linha = n_ / 3;
-    int primeiro_valor_coluna = n_ % 3;
-    for(i1 = 0; i1 < 3; i1++) {
-        for(j1 = 0; j1 < 3; j1++) {
-            for(i2 = 0; i2 < 3; i2++) {
-                for(j2 = 0; j2 < 3; j2++) {
+    int primeiro_valor_linha = n / 3;
+    int primeiro_valor_coluna = n % 3;
+    for(int i1 = 0; i1 < 3; i1++) {
+        for(int j1 = 0; j1 < 3; j1++) {
+            for(int i2 = 0; i2 < 3; i2++) {
+                for(int j2 = 0; j2 < 3; j2++) {
                     if (i1 != i2 || j1 != j2) {
                         if (grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1]==grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2]) {
                             return false;
@@ -171,4 +171,12 @@ bool Board::check_box(int n) {
     }
     return true;
 }
-    
+
+bool Board::is_valid_board() {
+    for (int i = 0; i < 9; i++) {
+        if(!check_line || !check_column || !check_box) {
+            return false;
+        }
+    }
+    return true;
+}
