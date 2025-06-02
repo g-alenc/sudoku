@@ -41,25 +41,18 @@ void print_grid(const Board& board) {
 int main(){
     // cria o tabuleiro
     Board board;
-    print_grid(board);
 
     // carrega um grid
     string grid_path = "tests/grid.txt";
     board.load_grid(grid_path);
     print_grid(board);
 
-    cout << "Numero de celulas preenchidas: " << board.cells_filled();
+    for(int n = 0; n < 9; n++){   
+        cout << "box " << n << ": " << board.check_box(n) << endl;
+    }    
 
-    // reinicia o grid
-    board.reset_board();
-    print_grid(board);
-
-
-    if (board.is_valid_board(board)) {
-        cout << "Válido" << endl;
-    } else {
-        cout << "Inválido" << endl;
-    }
+    //salva o grid
+    board.persist_grid(grid_path);
 
     return 0;
 }
