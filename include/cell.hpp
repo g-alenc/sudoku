@@ -19,9 +19,11 @@ class Cell{
 
         // altera o valor da célula
         // se for uma célula fixa não deve altera-la
-        // valores devem estar entre 1 e 9
-        void set_value(int value);
+        // valores devem estar entre 1 e 9 (ou 0)
+        // retorna true se a operação for feita com sucesso
+        bool set_value(int value);
 
+        // torna uma celula fixa
         bool is_fixed() const;
 
         // torna a célula fixa
