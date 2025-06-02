@@ -129,3 +129,19 @@ bool Board::persist_grid(string path){
     return true;
 }
 
+bool Board::check_line(int n) {
+    for (j1 = 0; j1 < 9; j1++) {
+        for (j2 = 0; j2 < 9; j2++) {
+            if (grid[n-1][j1] == grid[n-1][j2] && j1 != j2) {
+                return false;
+            }
+        } 
+        
+    }
+    return true;
+}
+
+bool Board::check_column(int n) {}
+
+bool Board::check_box(int n) {
+}

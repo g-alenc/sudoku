@@ -37,6 +37,15 @@ class Board{
 
         //salva o estado atual do tabuleiro
         bool persist_grid(string path);
+
+        //checa a linha
+        bool check_line(int n);
+
+        //checa a coluna
+        bool check_column(int n);
+
+        //checa a caixa
+        bool check_box(int n);
 };
 
 #endif
