@@ -14,6 +14,9 @@ class Sudoku{
     public:
     Board board;
     
+    Sudoku(string path);
+    Sudoku();
+
     // carrega um grid de um arquivo .txt
     bool load_grid(string path);
     
@@ -34,6 +37,9 @@ class Sudoku{
 
     //adiciona o movimento ao arquivo de log
     void add_move_to_log();
+
+    //inicia o jogo
+    void start_game();
 };
 
 

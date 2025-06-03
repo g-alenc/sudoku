@@ -6,6 +6,15 @@
 
 using namespace std;
 
+Sudoku::Sudoku(string path){
+    load_grid(path);
+}
+
+Sudoku::Sudoku(){
+    // generate_board();
+}
+
+
 bool Sudoku::load_grid(string path) {
     ifstream file;
     string grid_string;
