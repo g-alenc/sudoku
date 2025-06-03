@@ -31,6 +31,17 @@ class Cell{
 
         // desfixa uma célula
         void unfix();
+
+
+        // Função para converter um objeto Cell para um objeto nlohmann::json
+        inline void to_json(nlohmann::json& j, const Cell& cell) {
+            j = nlohmann::json{
+                {"value", cell.value}, 
+                {"is_predefined", cell.fixed},
+            };
+        }
+
+
 };
 
 
