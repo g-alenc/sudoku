@@ -84,9 +84,10 @@ bool Sudoku::persist_grid(string path){
     return true;
 }
 
+//TODO otimizar as funções de check
 bool Sudoku::check_line(int n) {
-    for (int j1 = 0; j1 < 9; j1++) {
-        for (int j2 = 0; j2 < 9; j2++) {
+    for (int j1 = 0; j1 < 8; j1++) {
+        for (int j2 = j1; j2 < 9; j2++) {
             if (this->board.grid[n][j1].get_value() == this->board.grid[n][j2].get_value() && j1 != j2 && this->board.grid[n][j1].get_value() != 0) {
                 return false;
             }
@@ -97,8 +98,8 @@ bool Sudoku::check_line(int n) {
 }
 
 bool Sudoku::check_column(int n) {
-    for (int i1 = 0; i1 < 9; i1++) {
-        for (int i2 = 0; i2 < 9; i2++) {
+    for (int i1 = 0; i1 < 8; i1++) {
+        for (int i2 = i1; i2 < 9; i2++) {
             if (this->board.grid[i1][n].get_value() == this->board.grid[i2][n].get_value() && i1 != i2 && this->board.grid[i2][n].get_value() != 0) {
                 return false;
             }
@@ -109,13 +110,13 @@ bool Sudoku::check_column(int n) {
 }
 
 bool Sudoku::check_box(int n) {
-    int primeiro_valor_linha = n / 3;
-    int primeiro_valor_coluna = n % 3;
+    int primeiro_valor_linha = (n / 3) *3;
+    int primeiro_valor_coluna = (n % 3) *3;
     for(int i1 = 0; i1 < 3; i1++) {
         for(int j1 = 0; j1 < 3; j1++) {
             for(int i2 = 0; i2 < 3; i2++) {
                 for(int j2 = 0; j2 < 3; j2++) {
-                    if (i1 != i2 || j1 != j2) {
+                    if (i1 != i2 && j1 != j2) {
                         if (this->board.grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1].get_value()==this->board.grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].get_value() && this->board.grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].get_value() != 0) {
                             return false;
                         }
@@ -127,7 +128,7 @@ bool Sudoku::check_box(int n) {
     return true;
 }
 
-bool Sudoku::is_valid_board(Board board) {
+bool Sudoku::is_valid_board() {
     for (int i = 0; i < 9; i++) {
         if(!this->check_line(i) || !this->check_column(i) || !this->check_box(i)) {
             return false;

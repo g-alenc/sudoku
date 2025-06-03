@@ -29,8 +29,8 @@ class Sudoku{
     //checa a caixa
     bool check_box(int n);
 
-    //checa se o tabuleiro é valido com as ultimas funções
-    bool is_valid_board(Board b);
+    //checa se o tabuleiro é valido com as funções de check
+    bool is_valid_board();
 
     //adiciona o movimento ao arquivo de log
     void add_move_to_log();

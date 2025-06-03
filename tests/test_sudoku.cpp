@@ -49,7 +49,7 @@ int main(){
     print_grid(game.board);
 
     for(int n = 0; n < 9; n++){   
-        cout << "box " << n << ": " << game.check_box(n) << endl;
+        cout << "line " << n << ": " << game.check_line(n) << endl;
     }    
 
     //salva o grid
