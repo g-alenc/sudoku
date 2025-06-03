@@ -32,5 +32,13 @@ class Board{
         vector<vector<Cell>> get_grid() const;
 };
 
+// Função para converter um objeto nlohmann::json para um objeto Board
+inline void from_json(const nlohmann::json& j, Board& board) {
+
+    auto grid = board.get_grid();
+    j.at("grid").get_to(grid);
+
+}
+
 
 #endif
