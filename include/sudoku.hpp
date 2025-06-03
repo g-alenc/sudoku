@@ -41,6 +41,8 @@ class Sudoku{
     //adiciona o movimento ao arquivo de log
     void add_move_to_log();
 
+    void print_grid() const;
+
     //inicia o jogo
     void start_game();
 

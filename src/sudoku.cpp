@@ -145,6 +145,39 @@ bool Sudoku::is_valid_board() {
     return true;
 }
 
+void Sudoku::print_grid() const{
+    const std::string RED = "\033[31m";    // Vermelho
+    const std::string YELLOW = "\033[33m"; // Amarelo
+    const std::string RESET = "\033[0m";   // Reseta a cor para o padrão do terminal
+
+    std::cout << "\n\n---------------------" << std::endl;
+    for (int x = 0; x < 9; ++x) {
+        for (int y = 0; y < 9; ++y) {
+            if (y > 0 && y % 3 == 0) {
+                std::cout << "| ";
+            }
+
+            const Cell& current_cell = board.grid[x][y];
+            int value = current_cell.get_value();
+            if (value == 0) {
+                std::cout << "  "; 
+            } else {
+                if (current_cell.is_fixed()) {
+                    std::cout << RED << value << RESET << " "; 
+                } else {
+                    std::cout << YELLOW << value << RESET << " ";
+                }
+            }
+        }
+        std::cout << std::endl;
+
+        if ((x + 1) % 3 == 0 && x < 8) {
+            std::cout << "---------------------" << std::endl;
+        }
+    }
+    std::cout << "---------------------" << std::endl;
+}
+
 pair<pair<int, int>, int> Sudoku::get_move(){
     int x = 0;
     int y = 0;
