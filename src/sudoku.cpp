@@ -146,36 +146,44 @@ bool Sudoku::is_valid_board() {
 }
 
 void Sudoku::print_grid() const{
-    const std::string RED = "\033[31m";    // Vermelho
-    const std::string YELLOW = "\033[33m"; // Amarelo
-    const std::string RESET = "\033[0m";   // Reseta a cor para o padrão do terminal
+    const string RED = "\033[31m";    // Vermelho
+    const string YELLOW = "\033[33m"; // Amarelo
+    const string RESET = "\033[0m";   // Reseta a cor para o padrão do terminal
 
-    std::cout << "\n\n---------------------" << std::endl;
+    cout << "\n\n---------------------" << endl;
     for (int x = 0; x < 9; ++x) {
         for (int y = 0; y < 9; ++y) {
             if (y > 0 && y % 3 == 0) {
-                std::cout << "| ";
+                cout << "| ";
             }
 
             const Cell& current_cell = board.grid[x][y];
             int value = current_cell.get_value();
             if (value == 0) {
-                std::cout << "  "; 
+                cout << "  "; 
             } else {
                 if (current_cell.is_fixed()) {
-                    std::cout << RED << value << RESET << " "; 
+                    cout << RED << value << RESET << " "; 
                 } else {
-                    std::cout << YELLOW << value << RESET << " ";
+                    cout << YELLOW << value << RESET << " ";
                 }
             }
         }
-        std::cout << std::endl;
+        cout << endl;
 
         if ((x + 1) % 3 == 0 && x < 8) {
-            std::cout << "---------------------" << std::endl;
+            cout << "---------------------" << endl;
         }
     }
-    std::cout << "---------------------" << std::endl;
+    cout << "---------------------";
+}
+
+bool Sudoku::make_move(int x, int y, int value){
+    //se o valor for 0 a jogada nao sera feita
+    if (value == 0) return false;
+
+    // chama a função change_value de board que faz rodas as outras verificações na jogada e muda o valor caso seja valida
+    return board.change_value(x, y, value);
 }
 
 pair<pair<int, int>, int> Sudoku::get_move(){
@@ -183,14 +191,14 @@ pair<pair<int, int>, int> Sudoku::get_move(){
     int y = 0;
     int value = 0;
 
-        std::cout << "DIGITE A POSIÇÃO X DA JOGADA: ";
-        std::cin >> x;
+        cout << endl << "DIGITE A POSIÇÃO X DA JOGADA: ";
+        cin >> x;
 
-        std::cout << "DIGITE A POSIÇÃO Y DA JOGADA: ";
-        std::cin >> y;
+        cout << "DIGITE A POSIÇÃO Y DA JOGADA: ";
+        cin >> y;
 
-        std::cout << "DIGITE O VALOR: ";
-        std::cin >> value;
+        cout << "DIGITE O VALOR: ";
+        cin >> value;
 
 
     auto pos = make_pair(x, y);
@@ -205,8 +213,7 @@ void Sudoku::start_game(){
 
         auto move = get_move();
         auto pos = move.first;
-        cout << pos.first << " " << pos.second << " " << move.second << endl;
-        board.change_value(pos.first, pos.second, move.second);
+        make_move(pos.first, pos.second, move.second);
 
     }
     string grid_path = "tests/grid.txt";

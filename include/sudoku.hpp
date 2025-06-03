@@ -14,6 +14,7 @@ class Sudoku{
     public:
     Board board;
     
+    // constructors
     Sudoku(string path);
     Sudoku();
 
@@ -38,15 +39,20 @@ class Sudoku{
     //checa se o tabuleiro é valido com as funções de check
     bool is_valid_board();
 
+    //(terminal) mostra o estado atual do tabuleiro no terminal 
+    void print_grid() const;
+    
+    //(terminal) inicia o jogo 
+    void start_game();
+    
+    //(terminal) recebe uma jogada do terminal 
+    pair<pair<int, int>, int> get_move();
+
+    //aplica uma jogada ao grid
+    bool make_move(int x, int y, int value);
+    
     //adiciona o movimento ao arquivo de log
     void add_move_to_log();
-
-    void print_grid() const;
-
-    //inicia o jogo
-    void start_game();
-
-    pair<pair<int, int>, int> get_move();
 };
 
 

@@ -21,8 +21,12 @@ void Board::reset_board(){
     }
 }
 
-void Board::change_value(int x, int y, int value){
-    grid[y][x].set_value(value);
+bool Board::change_value(int x, int y, int value){
+    // confere se a posição (x, y) é valida
+    if (x < 0 || x > 8) return false;
+    if (y < 0 || y > 8) return false;
+
+    return grid[y][x].set_value(value);
 }
 
 int Board::get_value(int x, int y) const{

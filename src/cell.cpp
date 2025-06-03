@@ -16,7 +16,7 @@ Cell::Cell(int value, bool fixed){
 bool Cell::set_value(int value){
     
     if (this->fixed) return false;
-    if (value < 0 | value > 9) return 0;
+    if (value < 0 | value > 9) return false;
 
     this->value = value;
     return true;

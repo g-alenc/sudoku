@@ -28,7 +28,7 @@ class Board{
         int get_value(int x, int y) const;
 
         // edita o valor de uma celula dada uma posição
-        void change_value(int x, int y, int value);
+        bool change_value(int x, int y, int value);
 
 };
 
