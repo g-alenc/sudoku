@@ -12,6 +12,11 @@ class Board{
         vector<vector<Cell>> grid;  
         
     public:
+
+        // Da acesso das variaveis private às funções to_json() e from_json
+        friend inline void to_json(nlohmann::json& j, const Board& board);
+        friend inline void from_json(const nlohmann::json& j, Board& board);
+
         Board();
         
         // retorna o numero de células preenchidas
@@ -28,15 +33,19 @@ class Board{
 
         // edita o valor de uma celula dada uma posição
         bool change_value(int x, int y, int value);
-
-        vector<vector<Cell>> get_grid() const;
 };
+
+// Função para converter um objeto Board para um objeto nlohmann::json
+inline void to_json(nlohmann::json& j, const Board& board) {
+
+    j["grid"] = board.grid;
+
+}
 
 // Função para converter um objeto nlohmann::json para um objeto Board
 inline void from_json(const nlohmann::json& j, Board& board) {
 
-    auto grid = board.get_grid();
-    j.at("grid").get_to(grid);
+    j.at("grid").get_to(board.grid);
 
 }
 
