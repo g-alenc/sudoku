@@ -201,10 +201,15 @@ pair<pair<int, int>, int> Sudoku::get_move(){
 
 void Sudoku::start_game(){
     while (true){
+        print_grid();
+
         auto move = get_move();
         auto pos = move.first;
-
+        cout << pos.first << " " << pos.second << " " << move.second << endl;
         board.change_value(pos.first, pos.second, move.second);
 
     }
+    string grid_path = "tests/grid.txt";
+    persist_grid(grid_path);
+
 }

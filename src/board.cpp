@@ -22,7 +22,7 @@ void Board::reset_board(){
 }
 
 void Board::change_value(int x, int y, int value){
-    grid[x][y].set_value(value);
+    grid[y][x].set_value(value);
 }
 
 int Board::get_value(int x, int y) const{
