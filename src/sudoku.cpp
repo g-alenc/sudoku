@@ -145,24 +145,33 @@ bool Sudoku::is_valid_board() {
     return true;
 }
 
-pair<int, int> Sudoku::get_move_pos(){
+pair<pair<int, int>, int> Sudoku::get_move(){
     int x = 0;
     int y = 0;
+    int value = 0;
 
-    while(x < 1 || x > 9 || y < 1 || y > 9 ){
         std::cout << "DIGITE A POSIÇÃO X DA JOGADA: ";
         std::cin >> x;
 
         std::cout << "DIGITE A POSIÇÃO Y DA JOGADA: ";
         std::cin >> y;
-    }
 
-    return make_pair(x, y);
+        std::cout << "DIGITE O VALOR: ";
+        std::cin >> value;
+
+
+    auto pos = make_pair(x, y);
+    auto move = make_pair(pos, value);
+    return move;
+
 }
 
 void Sudoku::start_game(){
     while (true){
+        auto move = get_move();
+        auto pos = move.first;
 
+        board.change_value(pos.first, pos.second, move.second);
 
     }
 }

@@ -44,7 +44,7 @@ class Sudoku{
     //inicia o jogo
     void start_game();
 
-    pair<int, int> get_move_pos();
+    pair<pair<int, int>, int> get_move();
 };
 
 
