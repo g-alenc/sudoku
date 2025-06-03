@@ -92,7 +92,7 @@ bool Sudoku::persist_grid(string path){
     return true;
 }
 
-bool Sudoku::save_game(const std::string& filename) const {
+bool Sudoku::save_game(const string& filename) const {
     // Crie um objeto JSON vazio que representará o estado completo do jogo
     nlohmann::json j;
 
@@ -101,11 +101,11 @@ bool Sudoku::save_game(const std::string& filename) const {
     j["board"] = board;
 
     // Abre o arquivo json ou o cria
-    std::ofstream file(filename, std::ios::out | std::ios::trunc);
+    ofstream file(filename, ios::out | ios::trunc);
 
     // Verificar se o arquivo foi aberto com sucesso
     if (!file.is_open()) {
-        std::cerr << "Erro: Nao foi possivel abrir o arquivo para salvar o jogo: " << filename << std::endl;
+        cerr << "Erro: Nao foi possivel abrir o arquivo para salvar o jogo: " << filename << endl;
         return false;
     }
 
@@ -116,6 +116,34 @@ bool Sudoku::save_game(const std::string& filename) const {
     file.close();
 
     return true;
+}
+
+bool Sudoku::load_game(const string& filename){
+    // carrega o arquivo
+    ifstream file(filename);
+
+    if (!file.is_open()) {
+        cerr << "Erro: Arquivo de jogo salvo '" << filename << "' nao encontrado ou nao pode ser aberto." << endl;
+        return false;
+    }
+
+    // tenta ler e desserializar o JSON
+    try {
+        nlohmann::json j;
+        // carrega o conteudo do json em j
+        file >> j; 
+
+        j.at("board").get_to(board);
+
+        return true;
+
+    } catch (const nlohmann::json::exception& e) {
+        std::cerr << "Erro de parsing JSON ao carregar jogo de '" << filename << "': " << e.what() << std::endl;
+        return false;
+    } catch (const std::exception& e) {
+        std::cerr << "Erro inesperado ao carregar jogo de '" << filename << "': " << e.what() << std::endl;
+        return false;
+    }
 }
 
 //TODO otimizar as funções de check
@@ -235,6 +263,7 @@ pair<pair<int, int>, int> Sudoku::get_move(){
 
 void Sudoku::start_game(){
     string grid_path = "tests/grid.json";
+    load_game(grid_path);
     while (true){
         print_grid();
 

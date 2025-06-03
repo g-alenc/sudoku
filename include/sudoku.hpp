@@ -2,6 +2,7 @@
 #define SUDOKU_HPP
 #include "board.hpp"
 #include "interface.hpp"
+#include <fstream>
 #include <utility>
 
 class Sudoku{
@@ -27,8 +28,11 @@ class Sudoku{
     //salva o estado atual do tabuleiro
     bool persist_grid(string path);
 
+    //salva o estado atual do jogo
     bool save_game(const std::string& filename) const;
     
+    bool load_game(const std::string& filename);
+
     //checa a linha
     bool check_line(int n);
     
