@@ -92,6 +92,32 @@ bool Sudoku::persist_grid(string path){
     return true;
 }
 
+bool Sudoku::save_game(const std::string& filename) const {
+    // Crie um objeto JSON vazio que representará o estado completo do jogo
+    nlohmann::json j;
+
+    // Serializar o tabuleiro (m_board)
+    // Isso criará uma sub-estrutura JSON para o tabuleiro.
+    j["board"] = board;
+
+    // Abre o arquivo json ou o cria
+    std::ofstream file(filename, std::ios::out | std::ios::trunc);
+
+    // Verificar se o arquivo foi aberto com sucesso
+    if (!file.is_open()) {
+        std::cerr << "Erro: Nao foi possivel abrir o arquivo para salvar o jogo: " << filename << std::endl;
+        return false;
+    }
+
+    // Escrever o objeto JSON no arquivo
+    // j.dump(4) converte o objeto JSON para uma string formatada com 4 espaços de indentação.
+    file << j.dump(4);
+
+    file.close();
+
+    return true;
+}
+
 //TODO otimizar as funções de check
 bool Sudoku::check_line(int n) {
     for (int j1 = 0; j1 < 8; j1++) {
@@ -208,15 +234,15 @@ pair<pair<int, int>, int> Sudoku::get_move(){
 }
 
 void Sudoku::start_game(){
+    string grid_path = "tests/grid.json";
     while (true){
         print_grid();
 
         auto move = get_move();
         auto pos = move.first;
         make_move(pos.first, pos.second, move.second);
+        save_game(grid_path);
 
     }
-    string grid_path = "tests/grid.txt";
-    persist_grid(grid_path);
 
 }

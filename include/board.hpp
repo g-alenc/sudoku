@@ -1,5 +1,6 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
+#include "../include/json.hpp"
 #include <vector>
 #include <string>
 #include "cell.hpp"
@@ -9,14 +10,13 @@ using namespace std;
 class Board{
     private:
         // vector de vectors de celulas que formam o tabuleiro
-        vector<vector<Cell>> grid;  
         
     public:
-
         // Da acesso das variaveis private às funções to_json() e from_json
         friend inline void to_json(nlohmann::json& j, const Board& board);
         friend inline void from_json(const nlohmann::json& j, Board& board);
-
+    
+        vector<vector<Cell>> grid;      
         Board();
         
         // retorna o numero de células preenchidas

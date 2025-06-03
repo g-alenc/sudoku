@@ -26,6 +26,8 @@ class Sudoku{
     
     //salva o estado atual do tabuleiro
     bool persist_grid(string path);
+
+    bool save_game(const std::string& filename) const;
     
     //checa a linha
     bool check_line(int n);

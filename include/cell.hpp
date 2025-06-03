@@ -1,5 +1,6 @@
 #ifndef CELL_HPP
 #define CELL_HPP
+#include "../include/json.hpp"
 
 class Cell{
     private:
