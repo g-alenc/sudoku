@@ -14,7 +14,6 @@ Sudoku::Sudoku(){
     // generate_board();
 }
 
-
 bool Sudoku::load_grid(string path) {
     ifstream file;
     string grid_string;
@@ -144,4 +143,26 @@ bool Sudoku::is_valid_board() {
         }
     }
     return true;
+}
+
+pair<int, int> Sudoku::get_move_pos(){
+    int x = 0;
+    int y = 0;
+
+    while(x < 1 || x > 9 || y < 1 || y > 9 ){
+        std::cout << "DIGITE A POSIÇÃO X DA JOGADA: ";
+        std::cin >> x;
+
+        std::cout << "DIGITE A POSIÇÃO Y DA JOGADA: ";
+        std::cin >> y;
+    }
+
+    return make_pair(x, y);
+}
+
+void Sudoku::start_game(){
+    while (true){
+
+
+    }
 }

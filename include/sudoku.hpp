@@ -2,7 +2,7 @@
 #define SUDOKU_HPP
 #include "board.hpp"
 #include "interface.hpp"
-
+#include <utility>
 
 class Sudoku{
     private:
@@ -16,6 +16,9 @@ class Sudoku{
     
     Sudoku(string path);
     Sudoku();
+
+    //gera um tabuleiro valido de acordo com a dificuldade passada (aceita valores entre 1 e 3)
+    void generate_board(int diff);
 
     // carrega um grid de um arquivo .txt
     bool load_grid(string path);
@@ -40,6 +43,8 @@ class Sudoku{
 
     //inicia o jogo
     void start_game();
+
+    pair<int, int> get_move_pos();
 };
 
 
