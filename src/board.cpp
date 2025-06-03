@@ -56,3 +56,6 @@ bool Board::is_completed() const{
     return true;
 }
 
+vector<vector<Cell>> Board::get_grid() const{
+    return grid;
+}

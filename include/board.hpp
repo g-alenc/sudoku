@@ -9,11 +9,10 @@ using namespace std;
 class Board{
     private:
         // vector de vectors de celulas que formam o tabuleiro
-        
+        vector<vector<Cell>> grid;  
         
     public:
         Board();
-        vector<vector<Cell>> grid;  
         
         // retorna o numero de células preenchidas
         int cells_filled() const;
@@ -30,11 +29,8 @@ class Board{
         // edita o valor de uma celula dada uma posição
         bool change_value(int x, int y, int value);
 
+        vector<vector<Cell>> get_grid() const;
 };
 
-inline void to_json(nlohmann::json& j, const Board& board) {
-    j["grid"] = board.grid;
-
-}
 
 #endif
