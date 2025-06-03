@@ -11,7 +11,7 @@ class Board{
         // vector de vectors de celulas que formam o tabuleiro
         
         
-        public:
+    public:
         Board();
         vector<vector<Cell>> grid;  
         
@@ -31,5 +31,10 @@ class Board{
         bool change_value(int x, int y, int value);
 
 };
+
+inline void to_json(nlohmann::json& j, const Board& board) {
+    j["grid"] = board.grid;
+
+}
 
 #endif

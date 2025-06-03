@@ -32,21 +32,27 @@ class Cell{
         // desfixa uma célula
         void unfix();
 
-        // Função para converter um objeto Cell para um objeto nlohmann::json
-        inline void to_json(nlohmann::json& j, const Cell& cell) {
-            j = nlohmann::json{
-                {"value", cell.value}, 
-                {"is_predefined", cell.fixed},
-            };
-        }
 
-        // Função para converter um objeto nlohmann::json para um objeto Cell
-        inline void from_json(const nlohmann::json& j, Cell& cell) {
-            j.at("value").get_to(cell.value);
-            j.at("is_predefined").get_to(cell.fixed);
-        }
 
 };
 
+// Função para converter um objeto Cell para um objeto nlohmann::json
+inline void to_json(nlohmann::json& j, const Cell& cell) {
+    j = nlohmann::json{
+        {"value", cell.get_value()},
+        {"is_fixed", cell.is_fixed()},
+    };
+}
+
+// Função para converter um objeto nlohmann::json para um objeto Cell
+inline void from_json(const nlohmann::json& j, Cell& cell) {
+    int val = cell.get_value();
+    bool fixed = cell.is_fixed();
+
+    j.at("value").get_to(val);
+    j.at("is_fixed").get_to(fixed);
+
+    cell = Cell(val, fixed);
+}
 
 #endif

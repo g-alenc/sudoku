@@ -1,7 +1,8 @@
+#include "../include/json.hpp"
 #include "board.hpp"
+#include <iostream>
 #include <fstream>  
 #include <string>
-#include <iostream>
 
 Board::Board(){
     grid.resize(9);
