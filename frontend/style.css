@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#newGameButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 40px); /* 9 colunas de 40px */
+    grid-template-rows: repeat(9, 40px);    /* 9 linhas de 40px */
+    width: 360px; /* 9 * 40px */
+    height: 360px;
+    border: 2px solid #333;
+    margin: 20px auto;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #bbb;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-sizing: border-box; /* Garante que padding/border não aumentem o tamanho */
+}
+
+/* Bordas mais grossas para os blocos 3x3 */
+.cell:nth-child(3n) { border-right: 2px solid #333; }
+.cell:nth-child(9n) { border-right: 2px solid #333; } /* Garante a última coluna */
+.cell:nth-child(n+1):nth-child(-n+9) { /* Primeira linha */ }
+.cell:nth-child(n+10):nth-child(-n+18) { /* Segunda linha */ }
+/* Adiciona borda inferior mais grossa após a 3ª e 6ª linha */
+.cell:nth-child(n):nth-child(-n+27) { border-bottom: 2px solid #333; } /* Linha 3 */
+.cell:nth-child(n):nth-child(-n+54) { border-bottom: 2px solid #333; } /* Linha 6 */
+.cell:nth-child(n):nth-child(-n+81) { border-bottom: 2px solid #333; } /* Linha 9 */
+
+
+/* Bordas internas dos blocos 3x3 */
+.cell:nth-child(n+1):nth-child(-n+9) { border-top: 2px solid #333; }
+.cell:nth-child(3n+1) { border-left: 2px solid #333; }
+
+
+/* Células predefinidas (fixas) */
+.cell.predefined {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+/* Células editáveis pelo jogador */
+.cell.editable {
+    color: #007bff; /* Cor azul para valores do jogador */
+    cursor: pointer;
+}
+
+.cell.editable:hover {
+    background-color: #f5f5f5;
+}
+
+#message {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}

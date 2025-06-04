@@ -3,47 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World!</title>
-    <style>
-        /* CSS para estilizar o texto */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        h1 {
-            color: #4CAF50; /* Um verde legal */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            cursor: pointer; /* Indica que é clicável */
-        }
-    </style>
+    <title>Sudoku em C++ e Web</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Sudoku</h1>
+        <button id="newGameButton">Novo Jogo</button>
+        <div id="sudoku-board" class="sudoku-board">
+            </div>
+        <p id="message"></p>
+    </div>
 
-    <h1 id="mensagem"></h1>
-
-    <script>
-        // JavaScript para alterar o texto e adicionar interatividade
-        const mensagemElement = document.getElementById('mensagem');
-        mensagemElement.textContent = 'Olá, Mundo!'; // Define o texto inicial
-
-        // Adiciona um evento de clique
-        mensagemElement.addEventListener('click', function() {
-            if (mensagemElement.textContent === 'Olá, Mundo!') {
-                mensagemElement.textContent = 'Você Clicou! :)';
-                mensagemElement.style.color = '#FF5722'; // Altera a cor para laranja
-            } else {
-                mensagemElement.textContent = 'Olá, Mundo!';
-                mensagemElement.style.color = '#4CAF50'; // Volta a cor original
-            }
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
