@@ -56,6 +56,3 @@ bool Board::is_completed() const{
     return true;
 }
 
-const Board& Board::get_board() const{
-    return grid;
-}
