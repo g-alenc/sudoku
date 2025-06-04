@@ -35,5 +35,17 @@ int main(){
     svr.set_base_dir("../frontend");
 
 
+    // --- Start the Server ---
+    std::cout << "C++ Sudoku Server listening on port 8080..." << std::endl;
+    std::cout << "Access the web interface at: http://localhost:8080/index.html" << std::endl;
+    std::cout << "Press Ctrl+C to stop the server." << std::endl;
+
+    // The server will listen on all network interfaces (0.0.0.0) on port 8080.
+    // If the port is in use or there's another error, listen() will return false.
+    if (!svr.listen("0.0.0.0", 8080)) {
+        std::cerr << "Error: Could not start the server on port 8080. The port might already be in use." << std::endl;
+        return 1; // Return an error code
+    }
+
     return 0;
 }
