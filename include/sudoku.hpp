@@ -33,6 +33,8 @@ class Sudoku{
     
     bool load_game(const std::string& filename);
 
+    bool is_completed();
+
     //checa a linha
     bool check_line(int n);
     
@@ -57,6 +59,8 @@ class Sudoku{
     //aplica uma jogada ao grid
     bool make_move(int x, int y, int value);
     
+    const Board& get_board() const;
+
     //adiciona o movimento ao arquivo de log
     void add_move_to_log();
 };

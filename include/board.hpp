@@ -33,6 +33,8 @@ class Board{
 
         // edita o valor de uma celula dada uma posição
         bool change_value(int x, int y, int value);
+
+        const Board& get_board() const;
 };
 
 // Função para converter um objeto Board para um objeto nlohmann::json
@@ -48,6 +50,5 @@ inline void from_json(const nlohmann::json& j, Board& board) {
     j.at("grid").get_to(board.grid);
 
 }
-
 
 #endif
