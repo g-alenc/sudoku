@@ -37,7 +37,38 @@ async function fetchNewGame() {
     }
 }
 
+// Função para renderizar o tabuleiro no HTML
+function renderBoard(boardData) {
+    sudokuBoardElement.innerHTML = ''; // Limpa o tabuleiro existente
+    boardData.grid.forEach((row, rowIndex) => {
+        row.forEach((cellData, colIndex) => {
+            const cellElement = document.createElement('div');
+            cellElement.classList.add('cell');
+
+            // Adiciona as classes para as bordas do Sudoku (CSS do style.css já faz muito)
+            // Se o valor não for 0 (vazio), exibe o número
+            if (cellData.value !== 0) {
+                cellElement.textContent = cellData.value;
+            }
+
+            // Adiciona a classe 'predefined' se for uma célula inicial do puzzle
+            if (cellData.is_predefined) {
+                cellElement.classList.add('predefined');
+            } else {
+                cellElement.classList.add('editable'); // Células que o jogador pode preencher
+            }
+            
+            // Atributos de dados para identificar a célula (linha e coluna) no JS
+            cellElement.dataset.row = rowIndex;
+            cellElement.dataset.col = colIndex;
+
+            sudokuBoardElement.appendChild(cellElement);
+        });
+    });
+}
 
 // Adiciona um event listener para o botão "Novo Jogo"
 newGameButton.addEventListener('click', fetchNewGame);
 
+// Carrega um novo jogo automaticamente quando a página é carregada pela primeira vez
+document.addEventListener('DOMContentLoaded', fetchNewGame);
