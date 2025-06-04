@@ -20,7 +20,10 @@ void handle_new_game(const httplib::Request& req, httplib::Response& res) {
 }
 
 int main(){
+    // Cria uma instância do servidor HTTP
+    httplib::Server svr;
 
+    svr.Post("/api/new_game", handle_new_game);
 
     return 0;
 }
