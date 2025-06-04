@@ -32,8 +32,7 @@ int main(){
     svr.Post("/api/new_game", handle_new_game);
 
     // localiza a pasta com a interface web do jogo
-    svr.set_base_dir("../frontend");
-
+    svr.set_base_dir("./frontend");
 
     // --- Start the Server ---
     std::cout << "C++ Sudoku Server listening on port 8080..." << std::endl;
