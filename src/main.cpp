@@ -9,6 +9,11 @@ Sudoku game;
 // Handler para a rota /api/new_game (POST)
 // Inicia um novo jogo e envia o tabuleiro inicial para o cliente.
 void handle_new_game(const httplib::Request& req, httplib::Response& res) {
+    // --- Adicione as configurações CORS ---
+    res.set_header("Access-Control-Allow-Origin", "*");
+    res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.set_header("Access-Control-Allow-Headers", "Content-Type");
+    
     game.load_game("tests/grid.json"); 
 
     nlohmann::json response_body;
@@ -28,6 +33,7 @@ int main(){
 
     // localiza a pasta com a interface web do jogo
     svr.set_base_dir("../frontend");
+
 
     return 0;
 }
