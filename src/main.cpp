@@ -23,7 +23,11 @@ int main(){
     // Cria uma instância do servidor HTTP
     httplib::Server svr;
 
+    // cria a rota POST para new_game
     svr.Post("/api/new_game", handle_new_game);
+
+    // localiza a pasta com a interface web do jogo
+    svr.set_base_dir("../frontend");
 
     return 0;
 }
