@@ -67,18 +67,27 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
         return;
     }
 
-    game.make_move(row, col, value);
-
-
-    // bool move_sucess = game.make_move();
-    nlohmann::json response_body;
-    response_body["board"] = game.get_board(); // Serializa o tabuleiro para JSON
-    response_body["status"] = "success";
+    bool move_success = game.make_move(row, col, value);
+    bool game_over = false;
+    if  (move_success){
+        game_over = game.is_valid_board();
+    }
 
     nlohmann::json response_body;
+    response_body["board"] = game.get_board(); // Envia o tabuleiro atualizado 
+    response_body["success"] = move_success; // Informa se a jogada foi válida
+    response_body["game_over"] = game_over; // Informa se o jogo terminou
 
+    if (move_success) {
+        if (game_over) {
+            response_body["message"] = "Parabéns! Voce resolveu o Sudoku!";
+        } else {
+            response_body["message"] = "Jogada valida.";
+        }
+    } else {
+        response_body["message"] = "Jogada invalida. Verifique regras do Sudoku ou celula pre-definida.";
+    }
 
-    // Define o conteúdo e tipo da resposta
     res.set_content(response_body.dump(), "application/json"); 
     res.status = 200; // 200 = OK
 
