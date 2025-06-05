@@ -1,59 +1,58 @@
 #ifndef SUDOKU_HPP
 #define SUDOKU_HPP
+
 #include "board.hpp"
-#include "interface.hpp"
+#include "BoardGenerator.hpp"
+#include <string>
 #include <utility>
 
-class Sudoku{
-    private:
-    // Interface Interface;
-    
-    // transforma o grid em string
-    string grid_to_string();
-    
-    public:
+// A classe 'Sudoku' orquestra o jogo, gerenciando o tabuleiro,
+// a lógica de vitória e a interação com o usuário.
+class Sudoku {
+private:
+    // Converte o estado do tabuleiro para uma string formatada.
+    std::string grid_to_string() const;
+
+public:
     Board board;
-    
-    // constructors
-    Sudoku(string path);
+
+    // --- Construtores ---
+    // Construtor: carrega um Sudoku a partir de um arquivo.
+    Sudoku(const std::string& path);
+    // Construtor: gera um novo Sudoku com uma dificuldade.
+    Sudoku(BoardGenerator::Difficulty difficulty);
+    // Construtor padrão: gera um Sudoku de dificuldade média.
     Sudoku();
 
-    //gera um tabuleiro valido de acordo com a dificuldade passada (aceita valores entre 1 e 3)
-    void generate_board(int diff);
+    // --- Métodos de Gerenciamento do Jogo ---
+    // Gera um novo tabuleiro, substituindo o atual.
+    void generate_new_board(BoardGenerator::Difficulty difficulty);
+    // Carrega um tabuleiro de um arquivo.
+    bool load_grid(const std::string& path);
+    // Salva o tabuleiro atual em um arquivo.
+    bool persist_grid(const std::string& path) const;
 
-    // carrega um grid de um arquivo .txt
-    bool load_grid(string path);
-    
-    //salva o estado atual do tabuleiro
-    bool persist_grid(string path);
-    
-    //checa a linha
-    bool check_line(int n);
-    
-    //checa a coluna
-    bool check_column(int n);
-    
-    //checa a caixa
-    bool check_box(int n);
+    // --- Métodos de Lógica e Validação ---
+    // Verifica se uma linha específica é válida.
+    bool check_line(int n) const;
+    // Verifica se uma coluna específica é válida.
+    bool check_column(int n) const;
+    // Verifica se uma caixa 3x3 específica é válida (o parâmetro n é o índice de 0 a 8).
+    bool check_box(int n) const;
+    // Verifica se o tabuleiro inteiro segue as regras do Sudoku.
+    bool is_board_state_valid() const;
+    // Verifica a condição de vitória: se o tabuleiro está completo e válido.
+    bool is_solved() const;
 
-    //checa se o tabuleiro é valido com as funções de check
-    bool is_valid_board();
-
-    //(terminal) mostra o estado atual do tabuleiro no terminal 
+    // --- Métodos de Interface com o Usuário ---
+    // Imprime o tabuleiro no terminal.
     void print_grid() const;
-    
-    //(terminal) inicia o jogo 
-    void start_game();
-    
-    //(terminal) recebe uma jogada do terminal 
-    pair<pair<int, int>, int> get_move();
-
-    //aplica uma jogada ao grid
+    // Inicia o loop principal do jogo no terminal.
+    void start_game_loop();
+    // Pede e retorna uma jogada do usuário.
+    std::pair<std::pair<int, int>, int> get_move();
+    // Aplica uma jogada do usuário ao tabuleiro.
     bool make_move(int x, int y, int value);
-    
-    //adiciona o movimento ao arquivo de log
-    void add_move_to_log();
 };
 
-
-#endif
+#endif // SUDOKU_HPP
