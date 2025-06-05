@@ -17,15 +17,71 @@ void set_cors_headers(httplib::Response& res) {
 void handle_new_game(const httplib::Request& req, httplib::Response& res) {
     // Adicione as configurações CORS 
     set_cors_headers(res);
-    
+
     game.load_game("tests/grid.json"); 
 
     nlohmann::json response_body;
     response_body["board"] = game.get_board(); // Serializa o tabuleiro para JSON
     response_body["status"] = "success";
 
-    res.set_content(response_body.dump(), "application/json"); // Define o conteúdo e tipo da resposta
-    res.status = 200; // Define o status HTTP (200 OK)
+    // Define o conteúdo e tipo da resposta
+    res.set_content(response_body.dump(), "application/json"); 
+    res.status = 200; // 200 = OK
+}
+
+void handle_make_move(const httplib::Request& req, httplib::Response& res){
+    // Adicione as configurações CORS 
+    set_cors_headers(res);
+
+    int row, col, value;
+    nlohmann::json request_body;
+
+    // tenta ler o json do move
+    try{
+        request_body = nlohmann::json::parse(req.body);
+        
+        request_body.at("row").get_to(row);
+        request_body.at("col").get_to(col);
+        request_body.at("value").get_to(value);
+    }
+
+    // para erros de leitura do json
+    catch (const nlohmann::json::exception& e){
+        std::cerr << "Erro ao parsear JSON em handle_make_move: " << e.what() << std::endl;
+        nlohmann::json error_response;
+        error_response["status"] = "error";
+        error_response["message"] = "Formato de dados JSON invalido ou incompleto. Detalhe: " + std::string(e.what());
+        res.set_content(error_response.dump(), "application/json");
+        res.status = 400; // Bad Request
+        return; 
+    }
+
+    // lidando com outros erros
+    catch (const std::exception& e){
+        std::cerr << "Erro inesperado em handle_make_move: " << e.what() << std::endl;
+        nlohmann::json error_response;
+        error_response["status"] = "error";
+        error_response["message"] = "Erro interno do servidor ao processar requisicao.";
+        res.set_content(error_response.dump(), "application/json");
+        res.status = 500; // Internal Server Error
+        return;
+    }
+
+    game.make_move(row, col, value);
+
+
+    // bool move_sucess = game.make_move();
+    nlohmann::json response_body;
+    response_body["board"] = game.get_board(); // Serializa o tabuleiro para JSON
+    response_body["status"] = "success";
+
+    nlohmann::json response_body;
+
+
+    // Define o conteúdo e tipo da resposta
+    res.set_content(response_body.dump(), "application/json"); 
+    res.status = 200; // 200 = OK
+
 }
 
 int main(){
@@ -34,6 +90,10 @@ int main(){
 
     // cria a rota POST para new_game
     svr.Post("/api/new_game", handle_new_game);
+    
+    // cria a rota POST para make_move
+    svr.Post("/api/make_move", handle_make_move);
+    
 
     // localiza a pasta com a interface web do jogo
     svr.set_base_dir("./frontend");

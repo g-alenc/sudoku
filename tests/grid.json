@@ -8,7 +8,7 @@
                 },
                 {
                     "is_fixed": true,
-                    "value": 8
+                    "value": 0
                 },
                 {
                     "is_fixed": true,
@@ -340,7 +340,7 @@
                 },
                 {
                     "is_fixed": false,
-                    "value": 0
+                    "value": 1
                 }
             ]
         ]
