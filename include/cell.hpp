@@ -24,7 +24,7 @@ class Cell{
         // retorna true se a operação for feita com sucesso
         bool set_value(int value);
 
-        // torna uma celula fixa
+        // verifica se a célula é fixa
         bool is_fixed() const;
 
         // torna a célula fixa

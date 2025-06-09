@@ -1,210 +1,110 @@
 #include "sudoku.hpp"
-#include "board.hpp"
-#include <fstream>  
-#include <string>
+#include <fstream>
 #include <iostream>
 
-using namespace std;
-
-Sudoku::Sudoku(string path){
-    load_grid(path);
+// --- Construtores ---
+Sudoku::Sudoku(const std::string& path) {
+    if (!load_grid(path)) {
+        std::cerr << "Falha ao carregar o tabuleiro. Gerando um novo com dificuldade média." << std::endl;
+        generate_new_board(BoardGenerator::Difficulty::MEDIUM);
+    }
 }
 
-Sudoku::Sudoku(){
-    // generate_board();
+Sudoku::Sudoku(BoardGenerator::Difficulty difficulty) {
+    generate_new_board(difficulty);
 }
 
-bool Sudoku::load_grid(string path) {
-    ifstream file;
-    string grid_string;
+Sudoku::Sudoku() {
+    generate_new_board(BoardGenerator::Difficulty::MEDIUM);
+}
 
-    file.open(path);
-    if (!file.is_open()) {
-        cerr << "Error: Could not open file " << path << endl;
-        return false;
-    }
+// --- Métodos de Gerenciamento ---
+void Sudoku::generate_new_board(BoardGenerator::Difficulty difficulty) {
+    BoardGenerator generator;
+    this->board = generator.generate(difficulty);
+}
 
-    getline(file, grid_string);
-
-    if (grid_string.size() != 162) {
-        cerr << "Error: Invalid grid string size. Expected 162, got " << grid_string.size() << endl;
-        file.close();
-        return false;
-    }
-
-    for (int x = 0; x < 9; ++x) {
-        for (int y = 0; y < 9; ++y) {
-            int pos_in_string = 2 * (9 * x + y); 
-
-            char value_char = grid_string[pos_in_string];
-            char fixed_char = grid_string[pos_in_string + 1];
-
-            if (!isdigit(value_char)) {
-                cerr << "Error: Invalid character '" << value_char << "' found at position "
-                          << pos_in_string << ". Expected a digit (0-9)." << endl;
-                file.close();
-                return false;
-            }
-
-            int value = value_char - '0';
-            this->board.grid[x][y].set_value(value);
-
-            if (fixed_char == 'f') {
-                this->board.grid[x][y].fix();
-            }
-        }
-    }
-
+bool Sudoku::load_grid(const std::string& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) return false;
+    std::string grid_str;
+    file >> grid_str;
     file.close();
-    return true;
-}
-
-string Sudoku::grid_to_string(){
-    string grid_string;
-
-    for (int x = 0; x < 9; ++x) {
-        for (int y = 0; y < 9; ++y) {
-            int value = this->board.grid[x][y].get_value(); 
-            grid_string = grid_string + to_string(value);
-
-            string fixed = "l";
-            if(this->board.grid[x][y].is_fixed()) fixed = "f";
-            grid_string = grid_string + fixed;    
-        }
-    }
-    return grid_string;
-}
-
-bool Sudoku::persist_grid(string path){
-    const string grid_string = grid_to_string();
-
-    ofstream file(path);
-
-    if (!file.is_open()) {
-        cerr << "Error: Could not open file " << path << endl;
-        return false;
-    }
-
-    file << grid_string << endl;
-
-
-    file.close();
-    return true;
-}
-
-//TODO otimizar as funções de check
-bool Sudoku::check_line(int n) {
-    for (int j1 = 0; j1 < 8; j1++) {
-        for (int j2 = j1; j2 < 9; j2++) {
-            if (this->board.grid[n][j1].get_value() == this->board.grid[n][j2].get_value() && j1 != j2 && this->board.grid[n][j1].get_value() != 0) {
-                return false;
-            }
-        } 
-        
-    }
-    return true;
-}
-
-bool Sudoku::check_column(int n) {
-    for (int i1 = 0; i1 < 8; i1++) {
-        for (int i2 = i1; i2 < 9; i2++) {
-            if (this->board.grid[i1][n].get_value() == this->board.grid[i2][n].get_value() && i1 != i2 && this->board.grid[i2][n].get_value() != 0) {
-                return false;
-            }
-        } 
-        
-    }
-    return true;
-}
-
-bool Sudoku::check_box(int n) {
-    int primeiro_valor_linha = (n / 3) *3;
-    int primeiro_valor_coluna = (n % 3) *3;
-    for(int i1 = 0; i1 < 3; i1++) {
-        for(int j1 = 0; j1 < 3; j1++) {
-            for(int i2 = 0; i2 < 3; i2++) {
-                for(int j2 = 0; j2 < 3; j2++) {
-                    if (i1 != i2 && j1 != j2) {
-                        if (this->board.grid[primeiro_valor_linha + i1][primeiro_valor_coluna + j1].get_value()==this->board.grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].get_value() && this->board.grid[primeiro_valor_linha + i2][primeiro_valor_coluna + j2].get_value() != 0) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
-}
-
-void Sudoku::print_grid() const{
-    const string RED = "\033[31m";    // Vermelho
-    const string YELLOW = "\033[33m"; // Amarelo
-    const string RESET = "\033[0m";   // Reseta a cor para o padrão do terminal
-
-    cout << "\n\n---------------------" << endl;
-    for (int x = 0; x < 9; ++x) {
-        for (int y = 0; y < 9; ++y) {
-            if (y > 0 && y % 3 == 0) {
-                cout << "| ";
-            }
-
-            const Cell& current_cell = board.grid[x][y];
-            int value = current_cell.get_value();
-            if (value == 0) {
-                cout << "  "; 
+    if (grid_str.length() != 162) return false;
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            int pos = 2 * (9 * r + c);
+            int val = grid_str[pos] - '0';
+            board.grid[r][c].set_value(val);
+            if (grid_str[pos + 1] == 'f') {
+                board.grid[r][c].fix();
             } else {
-                if (current_cell.is_fixed()) {
-                    cout << RED << value << RESET << " "; 
-                } else {
-                    cout << YELLOW << value << RESET << " ";
-                }
+                board.grid[r][c].unfix();
             }
         }
-        cout << endl;
+    }
+    return true;
+}
 
-        if ((x + 1) % 3 == 0 && x < 8) {
-            cout << "---------------------" << endl;
+std::string Sudoku::grid_to_string() const {
+    std::string s = "";
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            s += std::to_string(board.grid[r][c].get_value());
+            s += board.grid[r][c].is_fixed() ? 'f' : 'l';
         }
     }
-    cout << "---------------------";
+    return s;
 }
 
-pair<pair<int, int>, int> Sudoku::get_move(){
-    int x = 0;
-    int y = 0;
-    int value = 0;
-
-        cout << endl << "DIGITE A POSIÇÃO X DA JOGADA: ";
-        cin >> x;
-
-        cout << "DIGITE A POSIÇÃO Y DA JOGADA: ";
-        cin >> y;
-
-        cout << "DIGITE O VALOR: ";
-        cin >> value;
-
-
-    auto pos = make_pair(x, y);
-    auto move = make_pair(pos, value);
-    return move;
-
+bool Sudoku::persist_grid(const std::string& path) const {
+    std::ofstream file(path);
+    if (!file.is_open()) return false;
+    file << grid_to_string();
+    file.close();
+    return true;
 }
 
-void Sudoku::start_game(){
-    string grid_path = "tests/grid.json";
-    load_game(grid_path);
-    while (true){
-        print_grid();
-
-        auto move = get_move();
-        auto pos = move.first;
-        make_move(pos.first, pos.second, move.second);
-        save_game(grid_path);
-
+// --- Métodos de Validação (Otimizados) ---
+bool Sudoku::check_line(int n) const {
+    bool seen[10] = {false};
+    for (int c = 0; c < 9; ++c) {
+        int value = board.get_value(n, c);
+        if (value != 0) {
+            if (seen[value]) return false;
+            seen[value] = true;
+        }
     }
-
+    return true;
 }
 
+bool Sudoku::check_column(int n) const {
+    bool seen[10] = {false};
+    for (int r = 0; r < 9; ++r) {
+        int value = board.get_value(r, n);
+        if (value != 0) {
+            if (seen[value]) return false;
+            seen[value] = true;
+        }
+    }
+    return true;
+}
+
+bool Sudoku::check_box(int n) const {
+    bool seen[10] = {false};
+    int start_row = (n / 3) * 3;
+    int start_col = (n % 3) * 3;
+    for (int r_offset = 0; r_offset < 3; ++r_offset) {
+        for (int c_offset = 0; c_offset < 3; ++c_offset) {
+            int value = board.get_value(start_row + r_offset, start_col + c_offset);
+            if (value != 0) {
+                if (seen[value]) return false;
+                seen[value] = true;
+            }
+        }
+    }
+    return true;
+}
 
 bool Sudoku::make_move(int x, int y, int value){
     //se o valor for 0 a jogada nao sera feita
@@ -268,7 +168,7 @@ bool Sudoku::load_game(const string& filename){
     }
 }
 
-bool Sudoku::is_valid_board() {
+bool Sudoku::is_board_state_valid() const{
     for (int i = 0; i < 9; i++) {
         if(!this->check_line(i) || !this->check_column(i) || !this->check_box(i)) {
             return false;
@@ -283,4 +183,78 @@ bool Sudoku::is_completed(){
 
 const Board& Sudoku::get_board() const{
     return board;
+}
+
+bool Sudoku::is_board_state_valid() const {
+    for (int i = 0; i < 9; i++) {
+        if (!check_line(i) || !check_column(i) || !check_box(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Sudoku::is_solved() const {
+    return board.is_completed() && is_board_state_valid();
+}
+
+// --- Métodos de Interface ---
+void Sudoku::print_grid() const {
+    const std::string RED = "\033[31m";
+    const std::string YELLOW = "\033[33m";
+    const std::string RESET = "\033[0m";
+    std::cout << "\n\n---------------------" << std::endl;
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
+            if (c > 0 && c % 3 == 0) std::cout << "| ";
+            int value = board.get_value(r, c);
+            if (value == 0) {
+                std::cout << "  ";
+            } else {
+                std::cout << (board.grid[r][c].is_fixed() ? RED : YELLOW) << value << RESET << " ";
+            }
+        }
+        std::cout << std::endl;
+        if ((r + 1) % 3 == 0 && r < 8) {
+            std::cout << "---------------------" << std::endl;
+        }
+    }
+    std::cout << "---------------------" << std::endl;
+}
+
+void Sudoku::start_game_loop() {
+    while (true) {
+        print_grid();
+        auto move_data = get_move();
+        int row = move_data.first.first;
+        int col = move_data.first.second;
+        int val = move_data.second;
+        
+        if (val == -1) {
+             std::cout << "Saindo do jogo. Ate mais!" << std::endl;
+             break;
+        }
+
+        if (!make_move(row, col, val)) {
+            std::cout << "\nJogada invalida. Tente novamente.\n";
+            continue;
+        }
+
+        if (is_solved()) {
+            print_grid();
+            std::cout << "\n\nParabens! Voce completou o Sudoku corretamente!\n\n";
+            break;
+        }
+    }
+}
+
+std::pair<std::pair<int, int>, int> Sudoku::get_move() {
+    int r, c, v;
+    std::cout << "\nDigite a linha (0-8), coluna (0-8) e valor (1-9)." << std::endl;
+    std::cout << "Para limpar uma celula, digite valor 0." << std::endl;
+    std::cout << "Para sair, digite -1 em qualquer campo." << std::endl;
+    std::cout << "Sua jogada (linha coluna valor): ";
+    std::cin >> r >> c >> v;
+    if (r == -1 || c == -1 || v == -1) return {{ -1, -1 }, -1 };
+    return {{r, c}, v};
 }
