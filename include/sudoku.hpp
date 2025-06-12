@@ -3,6 +3,8 @@
 #include "board.hpp"
 #include "interface.hpp"
 #include <utility>
+#include <vector>
+
 
 struct Move {
     int x;
@@ -23,6 +25,10 @@ class Sudoku{
 
     // índice atual do movimento
     int current_move_index = -1;
+
+    //histórico de movimentos, armazena os movimentos feitos no tabuleiro
+    std::vector<Move> move_history;
+
 
     
     public:
