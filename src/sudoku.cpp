@@ -178,12 +178,29 @@ void Sudoku::print_grid() const{
     cout << "---------------------";
 }
 
-bool Sudoku::make_move(int x, int y, int value){
-    //se o valor for 0 a jogada nao sera feita
-    if (value == 0) return false;
+bool Sudoku::make_move(int x, int y, int new_value) {
+    // se o valor for 0 a jogada não será feita
+    if (new_value == 0) return false;
 
-    // chama a função change_value de board que faz rodas as outras verificações na jogada e muda o valor caso seja valida
-    return board.change_value(x, y, value);
+    int old_value = board.get_value(x, y);
+
+    try {
+        // tenta fazer a jogada
+        board.change_value(x, y, new_value);
+
+        // se tiver "refazendo" jogadas depois de undo, apagar as jogadas "futuras"
+        if (current_move_index + 1 < (int)move_history.size()) {
+            move_history.erase(move_history.begin() + current_move_index + 1, move_history.end());
+        }
+
+        // adiciona a jogada no histórico
+        move_history.emplace_back(x, y, old_value, new_value);
+        current_move_index++;
+
+        return true;
+    } catch (const std::runtime_error& e) {
+        return false;
+    }
 }
 
 pair<pair<int, int>, int> Sudoku::get_move(){
