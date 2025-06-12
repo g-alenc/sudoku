@@ -70,7 +70,7 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
     bool move_success = game.make_move(row, col, value);
     bool game_over = false;
     if  (move_success){
-        game_over = game.is_valid_board();
+        game_over = game.is_board_state_valid();
     }
 
     nlohmann::json response_body;

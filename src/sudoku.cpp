@@ -3,9 +3,9 @@
 #include <iostream>
 
 // --- Construtores ---
-Sudoku::Sudoku(const std::string& path) {
+Sudoku::Sudoku(const string& path) {
     if (!load_grid(path)) {
-        std::cerr << "Falha ao carregar o tabuleiro. Gerando um novo com dificuldade média." << std::endl;
+        cerr << "Falha ao carregar o tabuleiro. Gerando um novo com dificuldade média." << endl;
         generate_new_board(BoardGenerator::Difficulty::MEDIUM);
     }
 }
@@ -24,10 +24,10 @@ void Sudoku::generate_new_board(BoardGenerator::Difficulty difficulty) {
     this->board = generator.generate(difficulty);
 }
 
-bool Sudoku::load_grid(const std::string& path) {
-    std::ifstream file(path);
+bool Sudoku::load_grid(const string& path) {
+    ifstream file(path);
     if (!file.is_open()) return false;
-    std::string grid_str;
+    string grid_str;
     file >> grid_str;
     file.close();
     if (grid_str.length() != 162) return false;
@@ -46,19 +46,19 @@ bool Sudoku::load_grid(const std::string& path) {
     return true;
 }
 
-std::string Sudoku::grid_to_string() const {
-    std::string s = "";
+string Sudoku::grid_to_string() const {
+    string s = "";
     for (int r = 0; r < 9; ++r) {
         for (int c = 0; c < 9; ++c) {
-            s += std::to_string(board.grid[r][c].get_value());
+            s += to_string(board.grid[r][c].get_value());
             s += board.grid[r][c].is_fixed() ? 'f' : 'l';
         }
     }
     return s;
 }
 
-bool Sudoku::persist_grid(const std::string& path) const {
-    std::ofstream file(path);
+bool Sudoku::persist_grid(const string& path) const {
+    ofstream file(path);
     if (!file.is_open()) return false;
     file << grid_to_string();
     file.close();
@@ -160,10 +160,10 @@ bool Sudoku::load_game(const string& filename){
         return true;
 
     } catch (const nlohmann::json::exception& e) {
-        std::cerr << "Erro de parsing JSON ao carregar jogo de '" << filename << "': " << e.what() << std::endl;
+        cerr << "Erro de parsing JSON ao carregar jogo de '" << filename << "': " << e.what() << endl;
         return false;
-    } catch (const std::exception& e) {
-        std::cerr << "Erro inesperado ao carregar jogo de '" << filename << "': " << e.what() << std::endl;
+    } catch (const exception& e) {
+        cerr << "Erro inesperado ao carregar jogo de '" << filename << "': " << e.what() << endl;
         return false;
     }
 }
@@ -200,26 +200,26 @@ bool Sudoku::is_solved() const {
 
 // --- Métodos de Interface ---
 void Sudoku::print_grid() const {
-    const std::string RED = "\033[31m";
-    const std::string YELLOW = "\033[33m";
-    const std::string RESET = "\033[0m";
-    std::cout << "\n\n---------------------" << std::endl;
+    const string RED = "\033[31m";
+    const string YELLOW = "\033[33m";
+    const string RESET = "\033[0m";
+    cout << "\n\n---------------------" << endl;
     for (int r = 0; r < 9; ++r) {
         for (int c = 0; c < 9; ++c) {
-            if (c > 0 && c % 3 == 0) std::cout << "| ";
+            if (c > 0 && c % 3 == 0) cout << "| ";
             int value = board.get_value(r, c);
             if (value == 0) {
-                std::cout << "  ";
+                cout << "  ";
             } else {
-                std::cout << (board.grid[r][c].is_fixed() ? RED : YELLOW) << value << RESET << " ";
+                cout << (board.grid[r][c].is_fixed() ? RED : YELLOW) << value << RESET << " ";
             }
         }
-        std::cout << std::endl;
+        cout << endl;
         if ((r + 1) % 3 == 0 && r < 8) {
-            std::cout << "---------------------" << std::endl;
+            cout << "---------------------" << endl;
         }
     }
-    std::cout << "---------------------" << std::endl;
+    cout << "---------------------" << endl;
 }
 
 void Sudoku::start_game_loop() {
@@ -231,30 +231,30 @@ void Sudoku::start_game_loop() {
         int val = move_data.second;
         
         if (val == -1) {
-             std::cout << "Saindo do jogo. Ate mais!" << std::endl;
+             cout << "Saindo do jogo. Ate mais!" << endl;
              break;
         }
 
         if (!make_move(row, col, val)) {
-            std::cout << "\nJogada invalida. Tente novamente.\n";
+            cout << "\nJogada invalida. Tente novamente.\n";
             continue;
         }
 
         if (is_solved()) {
             print_grid();
-            std::cout << "\n\nParabens! Voce completou o Sudoku corretamente!\n\n";
+            cout << "\n\nParabens! Voce completou o Sudoku corretamente!\n\n";
             break;
         }
     }
 }
 
-std::pair<std::pair<int, int>, int> Sudoku::get_move() {
+pair<pair<int, int>, int> Sudoku::get_move() {
     int r, c, v;
-    std::cout << "\nDigite a linha (0-8), coluna (0-8) e valor (1-9)." << std::endl;
-    std::cout << "Para limpar uma celula, digite valor 0." << std::endl;
-    std::cout << "Para sair, digite -1 em qualquer campo." << std::endl;
-    std::cout << "Sua jogada (linha coluna valor): ";
-    std::cin >> r >> c >> v;
+    cout << "\nDigite a linha (0-8), coluna (0-8) e valor (1-9)." << endl;
+    cout << "Para limpar uma celula, digite valor 0." << endl;
+    cout << "Para sair, digite -1 em qualquer campo." << endl;
+    cout << "Sua jogada (linha coluna valor): ";
+    cin >> r >> c >> v;
     if (r == -1 || c == -1 || v == -1) return {{ -1, -1 }, -1 };
     return {{r, c}, v};
 }
