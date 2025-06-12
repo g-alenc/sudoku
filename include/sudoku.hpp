@@ -20,6 +20,10 @@ class Sudoku{
     
     // transforma o grid em string
     string grid_to_string();
+
+    // índice atual do movimento
+    int current_move_index = -1;
+
     
     public:
     Board board;
