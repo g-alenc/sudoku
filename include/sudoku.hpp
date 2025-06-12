@@ -4,6 +4,16 @@
 #include "interface.hpp"
 #include <utility>
 
+struct Move {
+    int x;
+    int y;
+    int old_value;
+    int new_value;
+
+    Move(int x, int y, int old_value, int new_value)
+        : x(x), y(y), old_value(old_value), new_value(new_value) {}
+};
+
 class Sudoku{
     private:
     // Interface Interface;
