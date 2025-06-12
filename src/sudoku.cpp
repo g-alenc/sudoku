@@ -1,4 +1,5 @@
 #include "sudoku.hpp"
+#include "BoardGenerator.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -185,17 +186,21 @@ const Board& Sudoku::get_board() const{
     return board;
 }
 
-bool Sudoku::is_board_state_valid() const {
-    for (int i = 0; i < 9; i++) {
-        if (!check_line(i) || !check_column(i) || !check_box(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 bool Sudoku::is_solved() const {
     return board.is_completed() && is_board_state_valid();
+}
+
+bool Sudoku::new_game(int diff){
+    BoardGenerator bg;
+    BoardGenerator::Difficulty difficulty;
+
+    if (diff = 0) difficulty = BoardGenerator::Difficulty::EASY;
+    if (diff = 1) difficulty = BoardGenerator::Difficulty::MEDIUM;
+    if (diff = 2) difficulty = BoardGenerator::Difficulty::HARD;
+    if (diff = 3) difficulty = BoardGenerator::Difficulty::MASTER;
+
+    board = bg.generate(difficulty);
+    return true;
 }
 
 // --- Métodos de Interface ---

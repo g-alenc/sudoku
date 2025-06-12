@@ -46,6 +46,9 @@ public:
     
     bool load_game(const std::string& filename);
 
+    // gera um novo jogo de acordo com uma dificuldade
+    bool new_game(int diff);
+
     bool is_completed();
 
     //checa a caixa
