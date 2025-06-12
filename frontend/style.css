@@ -1,3 +1,4 @@
+/* Estilos Gerais */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -10,75 +11,243 @@ body {
 
 .container {
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    max-width: 500px; /* Limita a largura do container */
+    width: 90%; /* Responsivo */
 }
 
-#newGameButton {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sudoku-board {
-    display: grid;
-    grid-template-columns: repeat(9, 40px); /* 9 colunas de 40px */
-    grid-template-rows: repeat(9, 40px);    /* 9 linhas de 40px */
-    width: 360px; /* 9 * 40px */
-    height: 360px;
-    border: 2px solid #333;
-    margin: 20px auto;
-}
-
-.cell {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #bbb;
-    font-size: 1.2em;
-    font-weight: bold;
-    box-sizing: border-box; /* Garante que padding/border não aumentem o tamanho */
-}
-
-/* Bordas mais grossas para os blocos 3x3 */
-.cell:nth-child(3n) { border-right: 2px solid #333; }
-.cell:nth-child(9n) { border-right: 2px solid #333; } /* Garante a última coluna */
-.cell:nth-child(n+1):nth-child(-n+9) { /* Primeira linha */ }
-.cell:nth-child(n+10):nth-child(-n+18) { /* Segunda linha */ }
-/* Adiciona borda inferior mais grossa após a 3ª e 6ª linha */
-.cell:nth-child(n):nth-child(-n+27) { border-bottom: 2px solid #333; } /* Linha 3 */
-.cell:nth-child(n):nth-child(-n+54) { border-bottom: 2px solid #333; } /* Linha 6 */
-.cell:nth-child(n):nth-child(-n+81) { border-bottom: 2px solid #333; } /* Linha 9 */
-
-
-/* Bordas internas dos blocos 3x3 */
-.cell:nth-child(n+1):nth-child(-n+9) { border-top: 2px solid #333; }
-.cell:nth-child(3n+1) { border-left: 2px solid #333; }
-
-
-/* Células predefinidas (fixas) */
-.cell.predefined {
-    background-color: #e0e0e0;
+h1 {
     color: #333;
+    margin-bottom: 25px;
 }
 
-/* Células editáveis pelo jogador */
-.cell.editable {
-    color: #007bff; /* Cor azul para valores do jogador */
+button {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 1em;
+    margin: 8px;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Botões do menu preenchem a largura */
+    max-width: 250px; /* Limita a largura máxima dos botões */
 }
 
-.cell.editable:hover {
-    background-color: #f5f5f5;
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3e8e41;
 }
 
 #message {
-    color: green;
+    margin-top: 20px;
     font-weight: bold;
-    margin-top: 10px;
+    color: #555;
+    min-height: 20px; /* Garante que o espaço para mensagem não desapareça */
+}
+
+/* --- Estilos do Menu Principal --- */
+#mainMenu {
+    display: flex;
+    flex-direction: column; /* Botões um abaixo do outro */
+    align-items: center; /* Centraliza os botões */
+    gap: 15px; /* Espaçamento entre os botões */
+}
+
+/* --- Estilos das Opções de Novo Jogo --- */
+#newGameOptions {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+#newGameOptions h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+/* Estilos do Slider de Dificuldade */
+.difficulty-slider-container {
+    margin-bottom: 25px;
+    text-align: center;
+    padding: 0 10px; /* Um pouco de padding para o slider não tocar nas bordas */
+}
+
+#difficultySlider {
+    width: 100%;
+    -webkit-appearance: none; /* Remove estilos padrão do navegador */
+    appearance: none;
+    height: 10px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#difficultySlider:hover {
+    opacity: 1;
+}
+
+#difficultySlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#difficultySlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.difficulty-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.difficulty-labels span {
+    flex-grow: 1; /* Distribui o espaço igualmente */
+    text-align: center;
+}
+
+
+/* --- Estilos do Tabuleiro de Sudoku --- */
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    width: 100%; /* Largura total do container */
+    max-width: 450px; /* Tamanho máximo do tabuleiro */
+    aspect-ratio: 1 / 1; /* Mantém o tabuleiro quadrado */
+    border: 2px solid #333;
+    margin: 20px auto; /* Centraliza e adiciona margem */
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 1px solid #bbb;
+    box-sizing: border-box; /* Garante que padding e borda não aumentem o tamanho */
+    background-color: #fefefe;
+    color: #333;
+}
+
+/* Bordas mais grossas para blocos 3x3 */
+.cell:nth-child(3n) {
+    border-right: 2px solid #333;
+}
+
+.cell:nth-child(9n) {
+    border-right: 1px solid #bbb; /* Reseta a borda do último elemento da linha */
+}
+
+.cell:nth-child(n) {
+    border-left: 1px solid #bbb; /* Adiciona borda esquerda para todas as células */
+}
+
+.cell:nth-child(1), .cell:nth-child(10), .cell:nth-child(19), /* ... e assim por diante para a primeira coluna de cada linha */
+.cell:nth-child(28), .cell:nth-child(37), .cell:nth-child(46),
+.cell:nth-child(55), .cell:nth-child(64), .cell:nth-child(73) {
+    border-left: 2px solid #333;
+}
+
+/* Linhas com bordas mais grossas para blocos */
+.sudoku-board > div:nth-child(n + 1):nth-child(-n + 27) { /* 1ª - 3ª linha */
+    border-bottom: 1px solid #bbb;
+}
+.sudoku-board > div:nth-child(n + 28):nth-child(-n + 54) { /* 4ª - 6ª linha */
+    border-bottom: 1px solid #bbb;
+}
+.sudoku-board > div:nth-child(n + 55):nth-child(-n + 81) { /* 7ª - 9ª linha */
+    border-bottom: 1px solid #bbb;
+}
+
+
+/* Aplica a borda mais grossa a cada 3 linhas de células */
+.sudoku-board > div:nth-child(27n + 1),
+.sudoku-board > div:nth-child(27n + 2),
+.sudoku-board > div:nth-child(27n + 3),
+.sudoku-board > div:nth-child(27n + 4),
+.sudoku-board > div:nth-child(27n + 5),
+.sudoku-board > div:nth-child(27n + 6),
+.sudoku-board > div:nth-child(27n + 7),
+.sudoku-board > div:nth-child(27n + 8),
+.sudoku-board > div:nth-child(27n + 9) {
+    border-top: 2px solid #333;
+}
+
+/* Garante que a primeira linha de células não tenha borda superior extra */
+.sudoku-board > div:nth-child(1), .sudoku-board > div:nth-child(2), .sudoku-board > div:nth-child(3),
+.sudoku-board > div:nth-child(4), .sudoku-board > div:nth-child(5), .sudoku-board > div:nth-child(6),
+.sudoku-board > div:nth-child(7), .sudoku-board > div:nth-child(8), .sudoku-board > div:nth-child(9) {
+    border-top: 1px solid #bbb;
+}
+
+/* Células fixas (valores iniciais) */
+.cell.fixed {
+    background-color: #e0e0e0;
+    color: #222;
+    font-weight: bold;
+}
+
+/* Células que podem ser preenchidas pelo usuário */
+.cell.unfixed {
+    cursor: pointer;
+    background-color: #ffffff;
+}
+
+.cell.unfixed:hover {
+    background-color: #f0f8ff; /* Leve destaque ao passar o mouse */
+}
+
+/* Estilo para célula selecionada (se você for implementar a seleção) */
+/*
+.cell.selected {
+    background-color: #cfe2f3;
+}
+*/
+
+/* Media Queries para responsividade */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    .cell {
+        font-size: 1.2em;
+    }
 }

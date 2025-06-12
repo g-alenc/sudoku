@@ -9,9 +9,29 @@
 <body>
     <div class="container">
         <h1>Sudoku</h1>
-        <button id="newGameButton">Novo Jogo</button>
-        <div id="sudoku-board" class="sudoku-board">
+
+        <div id="mainMenu">
+            <button id="loadGameButton">Carregar Jogo Salvo</button>
+            <button id="showNewGameOptionsButton">Novo Jogo</button>
+        </div>
+
+        <div id="newGameOptions" style="display: none;">
+            <h2>Escolha a Dificuldade</h2>
+            <div class="difficulty-slider-container">
+                <input type="range" id="difficultySlider" min="0" max="2" value="1">
+                <div class="difficulty-labels">
+                    <span>Fácil</span>
+                    <span>Médio</span>
+                    <span>Difícil</span>
+                </div>
             </div>
+            <button id="startNewGameButton">Iniciar Novo Jogo</button>
+            <button id="backToMenuButton">Voltar ao Menu</button>
+        </div>
+
+        <div id="sudoku-board" class="sudoku-board" style="display: none;">
+            </div>
+
         <p id="message"></p>
     </div>
 

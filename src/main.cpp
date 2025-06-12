@@ -15,6 +15,20 @@ void set_cors_headers(httplib::Response& res) {
 
 // Inicia um novo jogo e envia o tabuleiro inicial para o cliente.
 void handle_new_game(const httplib::Request& req, httplib::Response& res) {
+    set_cors_headers(res);
+
+    game.new_game(1);
+
+    nlohmann::json response_body;
+    response_body["board"] = game.get_board();
+    response_body["status"] = "success";
+
+    res.set_content(response_body.dump(), "application/json");
+    res.status = 200;
+}
+
+// carrega o tabuleiro salvo
+void handle_load_game(const httplib::Request& req, httplib::Response& res) {
     // Adicione as configurações CORS 
     set_cors_headers(res);
 
@@ -29,6 +43,7 @@ void handle_new_game(const httplib::Request& req, httplib::Response& res) {
     res.status = 200; // 200 = OK
 }
 
+// faz um movimento se ele for valido
 void handle_make_move(const httplib::Request& req, httplib::Response& res){
     // Adicione as configurações CORS 
     set_cors_headers(res);
@@ -96,6 +111,9 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
 int main(){
     // Cria uma instância do servidor HTTP
     httplib::Server svr;
+
+    // cria a rota POST para new_game
+    svr.Post("/api/load_game", handle_load_game);
 
     // cria a rota POST para new_game
     svr.Post("/api/new_game", handle_new_game);
