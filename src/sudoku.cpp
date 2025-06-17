@@ -194,12 +194,13 @@ bool Sudoku::new_game(int diff){
     BoardGenerator bg;
     BoardGenerator::Difficulty difficulty;
 
-    if (diff = 0) difficulty = BoardGenerator::Difficulty::EASY;
-    if (diff = 1) difficulty = BoardGenerator::Difficulty::MEDIUM;
-    if (diff = 2) difficulty = BoardGenerator::Difficulty::HARD;
-    if (diff = 3) difficulty = BoardGenerator::Difficulty::MASTER;
+    if (diff == 0) difficulty = BoardGenerator::Difficulty::EASY;
+    else if (diff == 1) difficulty = BoardGenerator::Difficulty::MEDIUM;
+    else if (diff == 2) difficulty = BoardGenerator::Difficulty::HARD;
+    else if (diff == 3) difficulty = BoardGenerator::Difficulty::MASTER;
+    else difficulty = BoardGenerator::Difficulty::MEDIUM;
 
-    board = bg.generate(difficulty);
+    generate_new_board(difficulty);
     return true;
 }
 

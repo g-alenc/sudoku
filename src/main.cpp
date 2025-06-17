@@ -17,7 +17,24 @@ void set_cors_headers(httplib::Response& res) {
 void handle_new_game(const httplib::Request& req, httplib::Response& res) {
     set_cors_headers(res);
 
-    game.new_game(1);
+    // Padrão: MEDIUM
+    std::string difficulty_str = "medium";
+    if (!req.body.empty()) {
+        try {
+            auto body_json = nlohmann::json::parse(req.body);
+            if (body_json.contains("difficulty")) {
+                difficulty_str = body_json["difficulty"].get<std::string>();
+            }
+        } catch (...) {}
+    }
+
+    int diff = 1; // MEDIUM
+    if (difficulty_str == "easy") diff = 0;
+    else if (difficulty_str == "medium") diff = 1;
+    else if (difficulty_str == "hard") diff = 2;
+    else if (difficulty_str == "master") diff = 3;
+
+    game.new_game(diff);
 
     nlohmann::json response_body;
     response_body["board"] = game.get_board();

@@ -12,7 +12,7 @@ const sudokuBoardElement = document.getElementById('sudoku-board');
 const messageElement = document.getElementById('message');
 
 // Mapeamento de dificuldade para valores de slider
-const difficulties = ['easy', 'medium', 'hard']; // Corresponde a min=0, max=2 do slider
+const difficulties = ['easy', 'medium', 'hard', 'master']; // min=0, max=3
 
 // --- Funções de Exibição ---
 
@@ -48,7 +48,7 @@ async function fetchNewGame(difficulty) {
             headers: {
                 'Content-Type': 'application/json'
             },
-           // body: JSON.stringify({ difficulty: difficulty }) 
+            body: JSON.stringify({ difficulty })
         });
 
         if (!response.ok) {
