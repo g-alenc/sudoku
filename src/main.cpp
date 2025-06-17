@@ -45,7 +45,6 @@ void handle_load_game(const httplib::Request& req, httplib::Response& res) {
 
 // faz um movimento se ele for valido
 void handle_make_move(const httplib::Request& req, httplib::Response& res){
-    // Adicione as configurações CORS 
     set_cors_headers(res);
 
     int row, col, value;
@@ -54,13 +53,11 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
     // tenta ler o json do move
     try{
         request_body = nlohmann::json::parse(req.body);
-        
-        request_body.at("row").get_to(row);
-        request_body.at("col").get_to(col);
-        request_body.at("value").get_to(value);
+        // Aceita tanto string quanto int para os campos
+        if (request_body.contains("row")) request_body.at("row").get_to(row); else throw std::runtime_error("Campo 'row' ausente");
+        if (request_body.contains("col")) request_body.at("col").get_to(col); else throw std::runtime_error("Campo 'col' ausente");
+        if (request_body.contains("value")) request_body.at("value").get_to(value); else throw std::runtime_error("Campo 'value' ausente");
     }
-
-    // para erros de leitura do json
     catch (const nlohmann::json::exception& e){
         std::cerr << "Erro ao parsear JSON em handle_make_move: " << e.what() << std::endl;
         nlohmann::json error_response;
@@ -70,13 +67,11 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
         res.status = 400; // Bad Request
         return; 
     }
-
-    // lidando com outros erros
     catch (const std::exception& e){
         std::cerr << "Erro inesperado em handle_make_move: " << e.what() << std::endl;
         nlohmann::json error_response;
         error_response["status"] = "error";
-        error_response["message"] = "Erro interno do servidor ao processar requisicao.";
+        error_response["message"] = "Erro interno do servidor ao processar requisicao: " + std::string(e.what());
         res.set_content(error_response.dump(), "application/json");
         res.status = 500; // Internal Server Error
         return;
@@ -84,16 +79,15 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
 
     bool move_success = game.make_move(row, col, value);
     bool game_over = false;
-    if  (move_success){
-        game_over = game.is_board_state_valid();
-    }
-
     nlohmann::json response_body;
     response_body["board"] = game.get_board(); // Envia o tabuleiro atualizado 
     response_body["success"] = move_success; // Informa se a jogada foi válida
-    response_body["game_over"] = game_over; // Informa se o jogo terminou
+    response_body["game_over"] = false;
+    response_body["status"] = move_success ? "success" : "error";
 
     if (move_success) {
+        game_over = game.is_board_state_valid() && game.is_solved();
+        response_body["game_over"] = game_over;
         if (game_over) {
             response_body["message"] = "Parabéns! Voce resolveu o Sudoku!";
         } else {
@@ -104,8 +98,7 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
     }
 
     res.set_content(response_body.dump(), "application/json"); 
-    res.status = 200; // 200 = OK
-
+    res.status = 200; // Sempre retorna 200 para facilitar o tratamento no frontend
 }
 
 int main(){

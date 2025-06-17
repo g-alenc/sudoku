@@ -114,14 +114,16 @@ function renderBoard(boardData) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('cell');
 
-            if (cellData.value !== 0) {
-                cellElement.textContent = cellData.value;
-            }
-
             if (cellData.is_fixed) {
+                if (cellData.value !== 0) {
+                    cellElement.textContent = cellData.value;
+                }
                 cellElement.classList.add('fixed');
             } else {
                 cellElement.classList.add('unfixed');
+                if (cellData.value !== 0) {
+                    cellElement.textContent = cellData.value;
+                }
             }
 
             cellElement.dataset.row = rowIndex;
@@ -132,10 +134,84 @@ function renderBoard(boardData) {
     });
 }
 
+// Função para enviar uma jogada ao backend
+async function fetchMakeMove(row, col, value) {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/make_move`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ row, col, value })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || 'Erro ao fazer jogada.');
+        }
+        renderBoard(data.board);
+        if (data.success) {
+            messageElement.textContent = data.message || 'Jogada válida!';
+            if (data.game_over) {
+                setTimeout(() => {
+                    alert('Parabéns! Você resolveu o Sudoku!');
+                    showMenu();
+                }, 500);
+            } else {
+                setTimeout(() => messageElement.textContent = '', 2000);
+            }
+        } else {
+            messageElement.textContent = data.message || 'Jogada inválida!';
+            setTimeout(() => messageElement.textContent = '', 2000);
+        }
+    } catch (error) {
+        console.error('Erro ao enviar jogada:', error);
+        messageElement.textContent = `Erro ao conectar com o servidor: ${error.message}`;
+    }
+}
+
+// Adiciona evento de clique nas células para permitir jogadas
+function enableCellInput() {
+    let selectedCell = null;
+    let oldValue = '';
+
+    sudokuBoardElement.addEventListener('click', function(event) {
+        const cell = event.target;
+        if (!cell.classList.contains('cell') || cell.classList.contains('fixed')) return;
+        if (selectedCell) {
+            selectedCell.classList.remove('editing');
+        }
+        selectedCell = cell;
+        oldValue = cell.textContent.trim();
+        cell.classList.add('editing');
+    });
+
+    document.addEventListener('keydown', async function(event) {
+        if (!selectedCell) return;
+        // Permite apenas números 0-9 e Esc
+        if (event.key === 'Escape') {
+            selectedCell.classList.remove('editing');
+            selectedCell = null;
+            return;
+        }
+        if (/^[0-9]$/.test(event.key)) {
+            const value = parseInt(event.key);
+            const row = parseInt(selectedCell.dataset.row);
+            const col = parseInt(selectedCell.dataset.col);
+            await fetchMakeMove(row, col, value);
+            selectedCell.classList.remove('editing');
+            selectedCell = null;
+        }
+    });
+}
+
 // --- Event Listeners ---
 
 // Quando a página é carregada, mostra o menu principal
-document.addEventListener('DOMContentLoaded', showMenu);
+document.addEventListener('DOMContentLoaded', () => {
+    showMenu();
+    enableCellInput();
+});
 
 // Botão "Carregar Jogo Salvo"
 loadGameButton.addEventListener('click', fetchLoadGame);
