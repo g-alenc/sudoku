@@ -219,10 +219,16 @@ button:active {
 .cell.unfixed {
     cursor: pointer;
     background-color: #ffffff;
+    color: #1a237e;
 }
 
 .cell.unfixed:hover {
     background-color: #f0f8ff; /* Leve destaque ao passar o mouse */
+}
+
+/* Destaca a célula sendo editada apenas mudando o fundo */
+.cell.unfixed.editing, .cell-input:focus {
+    background-color: #e0e0e0 !important;
 }
 
 /* Estilo para célula selecionada (se você for implementar a seleção) */
@@ -250,4 +256,43 @@ button:active {
     .cell {
         font-size: 1.2em;
     }
+}
+
+/* Esconde as setas dos inputs type=number nas células do Sudoku */
+.cell-input::-webkit-outer-spin-button,
+.cell-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.cell-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Faz o input parecer texto normal, sem borda, sem outline, sem cursor de texto, sem mudança de tamanho/cor */
+.cell-input {
+    width: 100%;
+    height: 100%;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    background: transparent;
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #333;
+    cursor: pointer;
+    caret-color: transparent;
+    padding: 0;
+    margin: 0;
+    /* Remove highlight ao focar */
+}
+.cell-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    caret-color: transparent;
 }
