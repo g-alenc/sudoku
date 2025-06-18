@@ -5,15 +5,38 @@
 #include "BoardGenerator.hpp"
 #include <string>
 #include <utility>
+#include <vector>
+
+
+struct Move {
+    int x;
+    int y;
+    int old_value;
+    int new_value;
+
+    Move(int x, int y, int old_value, int new_value)
+        : x(x), y(y), old_value(old_value), new_value(new_value) {}
+};
+
 
 // A classe 'Sudoku' orquestra o jogo, gerenciando o tabuleiro,
 // a lógica de vitória e a interação com o usuário.
-class Sudoku {
-private:
-    // Converte o estado do tabuleiro para uma string formatada.
-    std::string grid_to_string() const;
+class Sudoku{
+    private:
+    // Interface Interface;
+    
+    // transforma o grid em string
+    string grid_to_string();
 
-public:
+    // índice atual do movimento
+    int current_move_index = -1;
+
+    //histórico de movimentos, armazena os movimentos feitos no tabuleiro
+    std::vector<Move> move_history;
+
+
+    
+    public:
     Board board;
 
     // --- Construtores ---

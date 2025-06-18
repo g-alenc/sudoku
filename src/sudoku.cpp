@@ -181,7 +181,28 @@ std::pair<std::pair<int, int>, int> Sudoku::get_move() {
 }
 
 bool Sudoku::make_move(int x, int y, int value) {
-    return board.change_value(x, y, value);
+    // se o valor for 0 nao faz a jogada
+    if (value == 0) return false;
+
+    int old_value = board.get_value(x, y);
+
+    try {
+        // faz a jogada
+        board.change_value(x, y, value);
+
+        // apaga as futuras jogadas se estiver "desfazendo" uma jogada
+        if (current_move_index + 1 < (int)move_history.size()) {
+            move_history.erase(move_history.begin() + current_move_index + 1, move_history.end());
+        }
+
+        // adiciona a jogada no histórico
+        move_history.emplace_back(x, y, old_value, value);
+        current_move_index++;
+
+        return true;
+    } catch (const std::runtime_error& e) {
+        return false;
+    }
 }
 
 // void Sudoku::add_move_to_log() {
