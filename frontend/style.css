@@ -1,0 +1,298 @@
+/* Estilos Gerais */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px; /* Limita a largura do container */
+    width: 90%; /* Responsivo */
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 25px;
+}
+
+button {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 8px;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Botões do menu preenchem a largura */
+    max-width: 250px; /* Limita a largura máxima dos botões */
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3e8e41;
+}
+
+#message {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #555;
+    min-height: 20px; /* Garante que o espaço para mensagem não desapareça */
+}
+
+/* --- Estilos do Menu Principal --- */
+#mainMenu {
+    display: flex;
+    flex-direction: column; /* Botões um abaixo do outro */
+    align-items: center; /* Centraliza os botões */
+    gap: 15px; /* Espaçamento entre os botões */
+}
+
+/* --- Estilos das Opções de Novo Jogo --- */
+#newGameOptions {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+#newGameOptions h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+/* Estilos do Slider de Dificuldade */
+.difficulty-slider-container {
+    margin-bottom: 25px;
+    text-align: center;
+    padding: 0 10px; /* Um pouco de padding para o slider não tocar nas bordas */
+}
+
+#difficultySlider {
+    width: 100%;
+    -webkit-appearance: none; /* Remove estilos padrão do navegador */
+    appearance: none;
+    height: 10px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#difficultySlider:hover {
+    opacity: 1;
+}
+
+#difficultySlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#difficultySlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.difficulty-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.difficulty-labels span {
+    flex-grow: 1; /* Distribui o espaço igualmente */
+    text-align: center;
+}
+
+
+/* --- Estilos do Tabuleiro de Sudoku --- */
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    width: 100%; /* Largura total do container */
+    max-width: 450px; /* Tamanho máximo do tabuleiro */
+    aspect-ratio: 1 / 1; /* Mantém o tabuleiro quadrado */
+    border: 2px solid #333;
+    margin: 20px auto; /* Centraliza e adiciona margem */
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 1px solid #bbb;
+    box-sizing: border-box; /* Garante que padding e borda não aumentem o tamanho */
+    background-color: #fefefe;
+    color: #333;
+}
+
+/* Bordas mais grossas para blocos 3x3 */
+.cell:nth-child(3n) {
+    border-right: 2px solid #333;
+}
+
+.cell:nth-child(9n) {
+    border-right: 1px solid #bbb; /* Reseta a borda do último elemento da linha */
+}
+
+.cell:nth-child(n) {
+    border-left: 1px solid #bbb; /* Adiciona borda esquerda para todas as células */
+}
+
+.cell:nth-child(1), .cell:nth-child(10), .cell:nth-child(19), /* ... e assim por diante para a primeira coluna de cada linha */
+.cell:nth-child(28), .cell:nth-child(37), .cell:nth-child(46),
+.cell:nth-child(55), .cell:nth-child(64), .cell:nth-child(73) {
+    border-left: 2px solid #333;
+}
+
+/* Linhas com bordas mais grossas para blocos */
+.sudoku-board > div:nth-child(n + 1):nth-child(-n + 27) { /* 1ª - 3ª linha */
+    border-bottom: 1px solid #bbb;
+}
+.sudoku-board > div:nth-child(n + 28):nth-child(-n + 54) { /* 4ª - 6ª linha */
+    border-bottom: 1px solid #bbb;
+}
+.sudoku-board > div:nth-child(n + 55):nth-child(-n + 81) { /* 7ª - 9ª linha */
+    border-bottom: 1px solid #bbb;
+}
+
+
+/* Aplica a borda mais grossa a cada 3 linhas de células */
+.sudoku-board > div:nth-child(27n + 1),
+.sudoku-board > div:nth-child(27n + 2),
+.sudoku-board > div:nth-child(27n + 3),
+.sudoku-board > div:nth-child(27n + 4),
+.sudoku-board > div:nth-child(27n + 5),
+.sudoku-board > div:nth-child(27n + 6),
+.sudoku-board > div:nth-child(27n + 7),
+.sudoku-board > div:nth-child(27n + 8),
+.sudoku-board > div:nth-child(27n + 9) {
+    border-top: 2px solid #333;
+}
+
+/* Garante que a primeira linha de células não tenha borda superior extra */
+.sudoku-board > div:nth-child(1), .sudoku-board > div:nth-child(2), .sudoku-board > div:nth-child(3),
+.sudoku-board > div:nth-child(4), .sudoku-board > div:nth-child(5), .sudoku-board > div:nth-child(6),
+.sudoku-board > div:nth-child(7), .sudoku-board > div:nth-child(8), .sudoku-board > div:nth-child(9) {
+    border-top: 1px solid #bbb;
+}
+
+/* Células fixas (valores iniciais) */
+.cell.fixed {
+    background-color: #e0e0e0;
+    color: #222;
+    font-weight: bold;
+}
+
+/* Células que podem ser preenchidas pelo usuário */
+.cell.unfixed {
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #1a237e;
+}
+
+.cell.unfixed:hover {
+    background-color: #f0f8ff; /* Leve destaque ao passar o mouse */
+}
+
+/* Destaca a célula sendo editada apenas mudando o fundo */
+.cell.unfixed.editing, .cell-input:focus {
+    background-color: #e0e0e0 !important;
+}
+
+/* Estilo para célula selecionada (se você for implementar a seleção) */
+/*
+.cell.selected {
+    background-color: #cfe2f3;
+}
+*/
+
+/* Media Queries para responsividade */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    .cell {
+        font-size: 1.2em;
+    }
+}
+
+/* Esconde as setas dos inputs type=number nas células do Sudoku */
+.cell-input::-webkit-outer-spin-button,
+.cell-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.cell-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Faz o input parecer texto normal, sem borda, sem outline, sem cursor de texto, sem mudança de tamanho/cor */
+.cell-input {
+    width: 100%;
+    height: 100%;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    background: transparent;
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #333;
+    cursor: pointer;
+    caret-color: transparent;
+    padding: 0;
+    margin: 0;
+    /* Remove highlight ao focar */
+}
+.cell-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    caret-color: transparent;
+}
