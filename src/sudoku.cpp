@@ -4,13 +4,6 @@
 #include <iostream>
 
 // --- Construtores ---
-Sudoku::Sudoku(const string& path) {
-    if (!load_grid(path)) {
-        cerr << "Falha ao carregar o tabuleiro. Gerando um novo com dificuldade média." << endl;
-        generate_new_board(BoardGenerator::Difficulty::MEDIUM);
-    }
-}
-
 Sudoku::Sudoku(BoardGenerator::Difficulty difficulty) {
     generate_new_board(difficulty);
 }
@@ -24,6 +17,7 @@ void Sudoku::generate_new_board(BoardGenerator::Difficulty difficulty) {
     BoardGenerator generator;
     this->board = generator.generate(difficulty);
 }
+
 
 // --- Métodos de Validação (Otimizados) ---
 bool Sudoku::check_line(int n) const {
@@ -223,7 +217,6 @@ pair<pair<int, int>, int> Sudoku::get_move() {
     if (r == -1 || c == -1 || v == -1) return {{ -1, -1 }, -1 };
     return {{r, c}, v};
 }
-<<<<<<< HEAD
 
 bool Sudoku::make_move(int x, int y, int value) {
     // se o valor for 0 nao faz a jogada
@@ -253,5 +246,3 @@ bool Sudoku::make_move(int x, int y, int value) {
 // void Sudoku::add_move_to_log() {
 //    (implementação futura)
 // }
-=======
->>>>>>> feature/interface
