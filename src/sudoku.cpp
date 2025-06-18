@@ -24,46 +24,6 @@ void Sudoku::generate_new_board(BoardGenerator::Difficulty difficulty) {
     this->board = generator.generate(difficulty);
 }
 
-bool Sudoku::load_grid(const std::string& path) {
-    std::ifstream file(path);
-    if (!file.is_open()) return false;
-    std::string grid_str;
-    file >> grid_str;
-    file.close();
-    if (grid_str.length() != 162) return false;
-    for (int r = 0; r < 9; ++r) {
-        for (int c = 0; c < 9; ++c) {
-            int pos = 2 * (9 * r + c);
-            int val = grid_str[pos] - '0';
-            board.grid[r][c].set_value(val);
-            if (grid_str[pos + 1] == 'f') {
-                board.grid[r][c].fix();
-            } else {
-                board.grid[r][c].unfix();
-            }
-        }
-    }
-    return true;
-}
-
-std::string Sudoku::grid_to_string() const {
-    std::string s = "";
-    for (int r = 0; r < 9; ++r) {
-        for (int c = 0; c < 9; ++c) {
-            s += std::to_string(board.grid[r][c].get_value());
-            s += board.grid[r][c].is_fixed() ? 'f' : 'l';
-        }
-    }
-    return s;
-}
-
-bool Sudoku::persist_grid(const std::string& path) const {
-    std::ofstream file(path);
-    if (!file.is_open()) return false;
-    file << grid_to_string();
-    file.close();
-    return true;
-}
 
 // --- Métodos de Validação (Otimizados) ---
 bool Sudoku::check_line(int n) const {

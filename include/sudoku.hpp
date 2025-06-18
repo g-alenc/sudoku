@@ -23,19 +23,12 @@ struct Move {
 // a lógica de vitória e a interação com o usuário.
 class Sudoku{
     private:
-    // Interface Interface;
-    
-    // transforma o grid em string
-    string grid_to_string();
-
     // índice atual do movimento
     int current_move_index = -1;
 
     //histórico de movimentos, armazena os movimentos feitos no tabuleiro
     std::vector<Move> move_history;
 
-
-    
     public:
     Board board;
 
@@ -50,10 +43,6 @@ class Sudoku{
     // --- Métodos de Gerenciamento do Jogo ---
     // Gera um novo tabuleiro, substituindo o atual.
     void generate_new_board(BoardGenerator::Difficulty difficulty);
-    // Carrega um tabuleiro de um arquivo.
-    bool load_grid(const std::string& path);
-    // Salva o tabuleiro atual em um arquivo.
-    bool persist_grid(const std::string& path) const;
 
     // --- Métodos de Lógica e Validação ---
     // Verifica se uma linha específica é válida.
