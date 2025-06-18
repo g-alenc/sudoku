@@ -35,9 +35,6 @@ class Sudoku{
     Board board;
 
     // ----------- Construtores -----------
-    // Construtor: carrega um Sudoku a partir de um arquivo.
-    Sudoku(const std::string& path);
-
     // Construtor: gera um novo Sudoku com uma dificuldade.
     Sudoku(BoardGenerator::Difficulty difficulty);
 
