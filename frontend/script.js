@@ -23,8 +23,7 @@ const difficulties = ['easy', 'medium', 'hard', 'master']; // min=0, max=3
 function showMenu() {
     mainMenu.style.display = 'block';
     newGameOptions.style.display = 'none';
-    sudokuBoardElement.style.display = 'none';
-    gameControls.style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'none';
     messageElement.textContent = ''; // Limpa mensagens anteriores
     gameNameInput.value = ''; // Limpa o nome do jogo
 }
@@ -32,16 +31,14 @@ function showMenu() {
 function showNewGameDifficultyOptions() {
     mainMenu.style.display = 'none';
     newGameOptions.style.display = 'block';
-    sudokuBoardElement.style.display = 'none';
-    gameControls.style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'none';
     messageElement.textContent = '';
 }
 
 function showBoard() {
     mainMenu.style.display = 'none';
     newGameOptions.style.display = 'none';
-    sudokuBoardElement.style.display = 'grid'; // 'grid' ou 'block' dependendo do seu CSS para o tabuleiro
-    gameControls.style.display = 'block';
+    document.getElementById('gameContainer').style.display = 'flex';
     messageElement.textContent = '';
 }
 
