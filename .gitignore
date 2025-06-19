@@ -33,3 +33,6 @@
 
 # Pasta do vscode
 .vscode/
+
+# arquivos de saves
+*.json

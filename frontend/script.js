@@ -91,14 +91,15 @@ async function fetchNewGame(difficulty) {
 }
 
 // Função para carregar um jogo salvo do backend
-async function fetchLoadGame() {
+async function fetchLoadGame(gameName) {
     messageElement.textContent = "Carregando jogo salvo...";
     try {
         const response = await fetch(`${BACKEND_URL}/api/load_game`, {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ gameName })
         });
 
         if (!response.ok) {
@@ -121,6 +122,71 @@ async function fetchLoadGame() {
         console.error('Erro ao carregar jogo salvo:', error);
         messageElement.textContent = `Erro ao conectar com o servidor: ${error.message}. O servidor está rodando?`;
     }
+}
+
+// Função para listar jogos salvos
+async function fetchListGames() {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/list_games`);
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.games || [];
+    } catch (error) {
+        console.error('Erro ao listar jogos:', error);
+        messageElement.textContent = `Erro ao listar jogos salvos: ${error.message}`;
+        return [];
+    }
+}
+
+// Função para mostrar o diálogo de carregar jogo
+async function showLoadGameDialog() {
+    const savedGames = await fetchListGames();
+    
+    if (savedGames.length === 0) {
+        messageElement.textContent = "Nenhum jogo salvo encontrado.";
+        return;
+    }
+
+    // Esconde o menu principal
+    mainMenu.style.display = 'none';
+
+    // Cria o diálogo de carregar jogo se não existir
+    let loadGameDialog = document.getElementById('loadGameDialog');
+    if (!loadGameDialog) {
+        loadGameDialog = document.createElement('div');
+        loadGameDialog.id = 'loadGameDialog';
+        loadGameDialog.innerHTML = `
+            <h2>Carregar Jogo Salvo</h2>
+            <div id="savedGamesList"></div>
+            <button id="backToMenuFromLoadButton">Voltar ao Menu</button>
+        `;
+        document.querySelector('.container').appendChild(loadGameDialog);
+
+        // Adiciona evento ao botão de voltar
+        document.getElementById('backToMenuFromLoadButton').addEventListener('click', () => {
+            loadGameDialog.style.display = 'none';
+            showMenu();
+        });
+    }
+
+    // Atualiza a lista de jogos salvos
+    const savedGamesList = document.getElementById('savedGamesList');
+    savedGamesList.innerHTML = '';
+    savedGames.forEach(gameName => {
+        const gameButton = document.createElement('button');
+        gameButton.textContent = gameName;
+        gameButton.classList.add('saved-game-button');
+        gameButton.addEventListener('click', () => {
+            fetchLoadGame(gameName);
+            loadGameDialog.style.display = 'none';
+        });
+        savedGamesList.appendChild(gameButton);
+    });
+
+    // Mostra o diálogo
+    loadGameDialog.style.display = 'block';
 }
 
 // Função para salvar o jogo atual no backend
@@ -264,11 +330,11 @@ document.addEventListener('DOMContentLoaded', () => {
     enableCellInput();
 });
 
-// Botão "Carregar Jogo Salvo"
-loadGameButton.addEventListener('click', fetchLoadGame);
-
-// Botão "Novo Jogo" (no menu principal)
+// Adiciona os event listeners aos botões
+loadGameButton.addEventListener('click', showLoadGameDialog);
 showNewGameOptionsButton.addEventListener('click', showNewGameDifficultyOptions);
+backToMenuButton.addEventListener('click', showMenu);
+backToMenuFromGameButton.addEventListener('click', showMenu);
 
 // Botão "Iniciar Novo Jogo" (nas opções de dificuldade)
 startNewGameButton.addEventListener('click', () => {
@@ -277,11 +343,5 @@ startNewGameButton.addEventListener('click', () => {
     fetchNewGame(selectedDifficulty);
 });
 
-// Botão "Voltar ao Menu"
-backToMenuButton.addEventListener('click', showMenu);
-
 // Botão "Salvar Jogo"
 saveGameButton.addEventListener('click', fetchSaveGame);
-
-// Botão "Voltar ao Menu" (durante o jogo)
-backToMenuFromGameButton.addEventListener('click', showMenu);

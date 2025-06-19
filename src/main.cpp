@@ -3,6 +3,7 @@
 #include "../include/json.hpp"
 #include <iostream>
 #include <string>
+#include <filesystem>
 
 Sudoku game;
 
@@ -19,13 +20,32 @@ void handle_new_game(const httplib::Request& req, httplib::Response& res) {
 
     // Padrão: MEDIUM
     std::string difficulty_str = "medium";
+    std::string game_name;
+    
     if (!req.body.empty()) {
         try {
             auto body_json = nlohmann::json::parse(req.body);
             if (body_json.contains("difficulty")) {
                 difficulty_str = body_json["difficulty"].get<std::string>();
             }
-        } catch (...) {}
+            if (body_json.contains("gameName")) {
+                game_name = body_json["gameName"].get<std::string>();
+            } else {
+                nlohmann::json error_response;
+                error_response["status"] = "error";
+                error_response["message"] = "Nome do jogo não fornecido";
+                res.set_content(error_response.dump(), "application/json");
+                res.status = 400;
+                return;
+            }
+        } catch (const std::exception& e) {
+            nlohmann::json error_response;
+            error_response["status"] = "error";
+            error_response["message"] = std::string("Erro ao processar requisição: ") + e.what();
+            res.set_content(error_response.dump(), "application/json");
+            res.status = 400;
+            return;
+        }
     }
 
     int diff = 1; // MEDIUM
@@ -35,6 +55,7 @@ void handle_new_game(const httplib::Request& req, httplib::Response& res) {
     else if (difficulty_str == "master") diff = 3;
 
     game.new_game(diff);
+    game.board_name = game_name;
 
     nlohmann::json response_body;
     response_body["board"] = game.get_board();
@@ -49,15 +70,51 @@ void handle_load_game(const httplib::Request& req, httplib::Response& res) {
     // Adicione as configurações CORS 
     set_cors_headers(res);
 
-    game.load_game("tests/grid.json"); 
+    std::string game_name;
+    if (!req.body.empty()) {
+        try {
+            auto body_json = nlohmann::json::parse(req.body);
+            if (body_json.contains("gameName")) {
+                game_name = body_json["gameName"].get<std::string>();
+            }
+        } catch (const std::exception& e) {
+            nlohmann::json error_response;
+            error_response["status"] = "error";
+            error_response["message"] = std::string("Erro ao processar requisição: ") + e.what();
+            res.set_content(error_response.dump(), "application/json");
+            res.status = 400;
+            return;
+        }
+    }
 
+    if (game_name.empty()) {
+        nlohmann::json error_response;
+        error_response["status"] = "error";
+        error_response["message"] = "Nome do jogo não fornecido";
+        res.set_content(error_response.dump(), "application/json");
+        res.status = 400;
+        return;
+    }
+
+    std::string load_path = "saves/" + game_name + ".json";
+    bool load_success = game.load_game(load_path);
+
+    if (!load_success) {
+        nlohmann::json error_response;
+        error_response["status"] = "error";
+        error_response["message"] = "Erro ao carregar o jogo. Verifique se o arquivo existe.";
+        res.set_content(error_response.dump(), "application/json");
+        res.status = 404;
+        return;
+    }
+
+    game.board_name = game_name;
     nlohmann::json response_body;
-    response_body["board"] = game.get_board(); // Serializa o tabuleiro para JSON
+    response_body["board"] = game.get_board();
     response_body["status"] = "success";
 
-    // Define o conteúdo e tipo da resposta
-    res.set_content(response_body.dump(), "application/json"); 
-    res.status = 200; // 200 = OK
+    res.set_content(response_body.dump(), "application/json");
+    res.status = 200;
 }
 
 // faz um movimento se ele for valido
@@ -122,7 +179,38 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
 void handle_save_game(const httplib::Request& req, httplib::Response& res) {
     set_cors_headers(res);
 
-    bool save_success = game.save_game("tests/grid.json");
+    std::string game_name;
+    if (!req.body.empty()) {
+        try {
+            auto body_json = nlohmann::json::parse(req.body);
+            if (body_json.contains("gameName")) {
+                game_name = body_json["gameName"].get<std::string>();
+            }
+        } catch (const std::exception& e) {
+            nlohmann::json error_response;
+            error_response["status"] = "error";
+            error_response["message"] = std::string("Erro ao processar requisição: ") + e.what();
+            res.set_content(error_response.dump(), "application/json");
+            res.status = 400;
+            return;
+        }
+    }
+
+    if (game_name.empty()) {
+        game_name = game.board_name;
+    }
+
+    if (game_name.empty()) {
+        nlohmann::json error_response;
+        error_response["status"] = "error";
+        error_response["message"] = "Nome do jogo não fornecido";
+        res.set_content(error_response.dump(), "application/json");
+        res.status = 400;
+        return;
+    }
+
+    std::string save_path = "saves/" + game_name + ".json";
+    bool save_success = game.save_game(save_path);
 
     nlohmann::json response_body;
     if (save_success) {
@@ -137,9 +225,40 @@ void handle_save_game(const httplib::Request& req, httplib::Response& res) {
     res.status = 200;
 }
 
+// lista todos os jogos salvos
+void handle_list_games(const httplib::Request& req, httplib::Response& res) {
+    set_cors_headers(res);
+
+    nlohmann::json response_body;
+    std::vector<std::string> saved_games;
+
+    try {
+        for (const auto& entry : std::filesystem::directory_iterator("saves")) {
+            if (entry.path().extension() == ".json") {
+                // Remove a extensão .json do nome do arquivo
+                std::string game_name = entry.path().stem().string();
+                saved_games.push_back(game_name);
+            }
+        }
+
+        response_body["status"] = "success";
+        response_body["games"] = saved_games;
+        res.set_content(response_body.dump(), "application/json");
+        res.status = 200;
+    } catch (const std::exception& e) {
+        response_body["status"] = "error";
+        response_body["message"] = std::string("Erro ao listar jogos: ") + e.what();
+        res.set_content(response_body.dump(), "application/json");
+        res.status = 500;
+    }
+}
+
 int main(){
     // Cria uma instância do servidor HTTP
     httplib::Server svr;
+
+    // Cria o diretório saves se não existir
+    std::filesystem::create_directory("saves");
 
     // cria a rota POST para new_game
     svr.Post("/api/load_game", handle_load_game);
@@ -152,6 +271,9 @@ int main(){
     
     // cria a rota POST para save_game
     svr.Post("/api/save_game", handle_save_game);
+
+    // cria a rota GET para listar jogos salvos
+    svr.Get("/api/list_games", handle_list_games);
 
     // localiza a pasta com a interface web do jogo
     svr.set_base_dir("./frontend");
