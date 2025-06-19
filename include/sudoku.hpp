@@ -8,19 +8,23 @@
 #include <string>
 #include <utility>
 
+using namespace std;
+
 // A classe 'Sudoku' orquestra o jogo, gerenciando o tabuleiro,
 // a lógica de vitória e a interação com o usuário.
 class Sudoku {
 private:
     // Converte o estado do tabuleiro para uma string formatada.
-    std::string grid_to_string() const;
+    string grid_to_string() const;
 
 public:
     Board board;
 
+    string board_name;
+
     // ----------- Construtores -----------
     // Construtor: carrega um Sudoku a partir de um arquivo.
-    Sudoku(const std::string& path);
+    Sudoku(const string& path);
 
     // Construtor: gera um novo Sudoku com uma dificuldade.
     Sudoku(BoardGenerator::Difficulty difficulty);
@@ -33,18 +37,18 @@ public:
     void generate_new_board(BoardGenerator::Difficulty difficulty);
 
     // Carrega um tabuleiro de um arquivo.
-    bool load_grid(const std::string& path);
+    bool load_grid(const string& path);
 
     // Salva o tabuleiro atual em um arquivo.
-    bool persist_grid(const std::string& path) const;
+    bool persist_grid(const string& path) const;
 
     //salva o estado atual do tabuleiro
     bool persist_grid(string path);
 
     //salva o estado atual do jogo
-    bool save_game(const std::string& filename) const;
+    bool save_game(const string& filename) const;
     
-    bool load_game(const std::string& filename);
+    bool load_game(const string& filename);
 
     // gera um novo jogo de acordo com uma dificuldade
     bool new_game(int diff);
@@ -77,7 +81,7 @@ public:
     void start_game_loop();
 
     // Pede e retorna uma jogada do usuário.
-    std::pair<std::pair<int, int>, int> get_move();
+    pair<pair<int, int>, int> get_move();
 
     // Aplica uma jogada do usuário ao tabuleiro.
     bool make_move(int x, int y, int value);

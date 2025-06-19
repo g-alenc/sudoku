@@ -6,9 +6,13 @@ const loadGameButton = document.getElementById('loadGameButton');
 const showNewGameOptionsButton = document.getElementById('showNewGameOptionsButton');
 const newGameOptions = document.getElementById('newGameOptions');
 const difficultySlider = document.getElementById('difficultySlider');
+const gameNameInput = document.getElementById('gameNameInput');
 const startNewGameButton = document.getElementById('startNewGameButton');
 const backToMenuButton = document.getElementById('backToMenuButton');
 const sudokuBoardElement = document.getElementById('sudoku-board');
+const gameControls = document.getElementById('gameControls');
+const saveGameButton = document.getElementById('saveGameButton');
+const backToMenuFromGameButton = document.getElementById('backToMenuFromGameButton');
 const messageElement = document.getElementById('message');
 
 // Mapeamento de dificuldade para valores de slider
@@ -20,13 +24,16 @@ function showMenu() {
     mainMenu.style.display = 'block';
     newGameOptions.style.display = 'none';
     sudokuBoardElement.style.display = 'none';
+    gameControls.style.display = 'none';
     messageElement.textContent = ''; // Limpa mensagens anteriores
+    gameNameInput.value = ''; // Limpa o nome do jogo
 }
 
 function showNewGameDifficultyOptions() {
     mainMenu.style.display = 'none';
     newGameOptions.style.display = 'block';
     sudokuBoardElement.style.display = 'none';
+    gameControls.style.display = 'none';
     messageElement.textContent = '';
 }
 
@@ -34,6 +41,7 @@ function showBoard() {
     mainMenu.style.display = 'none';
     newGameOptions.style.display = 'none';
     sudokuBoardElement.style.display = 'grid'; // 'grid' ou 'block' dependendo do seu CSS para o tabuleiro
+    gameControls.style.display = 'block';
     messageElement.textContent = '';
 }
 
@@ -41,6 +49,12 @@ function showBoard() {
 
 // Função para buscar um novo jogo do backend com dificuldade
 async function fetchNewGame(difficulty) {
+    const gameName = gameNameInput.value.trim();
+    if (!gameName) {
+        messageElement.textContent = 'Por favor, digite um nome para o jogo.';
+        return;
+    }
+
     messageElement.textContent = `Carregando novo jogo (${difficulty})...`;
     try {
         const response = await fetch(`${BACKEND_URL}/api/new_game`, {
@@ -48,7 +62,10 @@ async function fetchNewGame(difficulty) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ difficulty })
+            body: JSON.stringify({ 
+                difficulty,
+                gameName
+            })
         });
 
         if (!response.ok) {
@@ -102,6 +119,40 @@ async function fetchLoadGame() {
 
     } catch (error) {
         console.error('Erro ao carregar jogo salvo:', error);
+        messageElement.textContent = `Erro ao conectar com o servidor: ${error.message}. O servidor está rodando?`;
+    }
+}
+
+// Função para salvar o jogo atual no backend
+async function fetchSaveGame() {
+    messageElement.textContent = "Salvando jogo...";
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/save_game`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                gameName: gameNameInput.value.trim()
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Erro HTTP: ${response.status} - ${errorData.message || 'Erro desconhecido ao salvar jogo'}`);
+        }
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            messageElement.textContent = "Jogo salvo com sucesso!";
+            setTimeout(() => messageElement.textContent = '', 3000);
+        } else {
+            messageElement.textContent = `Erro do servidor: ${data.message || 'Falha ao salvar jogo.'}`;
+        }
+
+    } catch (error) {
+        console.error('Erro ao salvar jogo:', error);
         messageElement.textContent = `Erro ao conectar com o servidor: ${error.message}. O servidor está rodando?`;
     }
 }
@@ -228,3 +279,9 @@ startNewGameButton.addEventListener('click', () => {
 
 // Botão "Voltar ao Menu"
 backToMenuButton.addEventListener('click', showMenu);
+
+// Botão "Salvar Jogo"
+saveGameButton.addEventListener('click', fetchSaveGame);
+
+// Botão "Voltar ao Menu" (durante o jogo)
+backToMenuFromGameButton.addEventListener('click', showMenu);

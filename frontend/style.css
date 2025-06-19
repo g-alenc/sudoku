@@ -296,3 +296,75 @@ button:active {
     cursor: pointer;
     caret-color: transparent;
 }
+
+.cell.editing {
+    background-color: #e3f2fd;
+    border: 2px solid #2196F3;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+/* --- Estilos dos Controles do Jogo --- */
+#gameControls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+#gameControls button {
+    padding: 12px 24px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#saveGameButton {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#saveGameButton:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+#backToMenuFromGameButton {
+    background-color: #f44336;
+    color: white;
+}
+
+#backToMenuFromGameButton:hover {
+    background-color: #da190b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.game-name-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.game-name-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.game-name-container input {
+    padding: 8px;
+    width: 80%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.game-name-container input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}

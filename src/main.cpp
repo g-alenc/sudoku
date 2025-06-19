@@ -118,6 +118,25 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
     res.status = 200; // Sempre retorna 200 para facilitar o tratamento no frontend
 }
 
+// salva o jogo atual
+void handle_save_game(const httplib::Request& req, httplib::Response& res) {
+    set_cors_headers(res);
+
+    bool save_success = game.save_game("tests/grid.json");
+
+    nlohmann::json response_body;
+    if (save_success) {
+        response_body["status"] = "success";
+        response_body["message"] = "Jogo salvo com sucesso!";
+    } else {
+        response_body["status"] = "error";
+        response_body["message"] = "Erro ao salvar o jogo.";
+    }
+
+    res.set_content(response_body.dump(), "application/json");
+    res.status = 200;
+}
+
 int main(){
     // Cria uma instância do servidor HTTP
     httplib::Server svr;
@@ -131,6 +150,8 @@ int main(){
     // cria a rota POST para make_move
     svr.Post("/api/make_move", handle_make_move);
     
+    // cria a rota POST para save_game
+    svr.Post("/api/save_game", handle_save_game);
 
     // localiza a pasta com a interface web do jogo
     svr.set_base_dir("./frontend");
