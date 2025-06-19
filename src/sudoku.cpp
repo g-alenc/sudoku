@@ -108,9 +108,6 @@ bool Sudoku::check_box(int n) const {
 }
 
 bool Sudoku::make_move(int x, int y, int value){
-    //se o valor for 0 a jogada nao sera feita
-    if (value == 0) return false;
-
     // chama a função change_value de board que faz rodas as outras verificações na jogada e muda o valor caso seja valida
     return board.change_value(x, y, value);
 }

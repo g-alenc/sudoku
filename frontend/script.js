@@ -302,8 +302,16 @@ function enableCellInput() {
 
     document.addEventListener('keydown', async function(event) {
         if (!selectedCell) return;
-        // Permite apenas números 0-9 e Esc
+        // Permite apenas números 0-9, Esc e Backspace
         if (event.key === 'Escape') {
+            selectedCell.classList.remove('editing');
+            selectedCell = null;
+            return;
+        }
+        if (event.key === 'Backspace') {
+            const row = parseInt(selectedCell.dataset.row);
+            const col = parseInt(selectedCell.dataset.col);
+            await fetchMakeMove(row, col, 0);
             selectedCell.classList.remove('editing');
             selectedCell = null;
             return;
