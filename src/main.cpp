@@ -3,8 +3,14 @@
 #include "../include/json.hpp"
 #include <iostream>
 #include <string>
+#include <chrono> // Inclua para funcionalidades de tempo
 
 Sudoku game;
+
+// Variável global para armazenar o tempo de início do JOGO atual
+// É uma solução simples para este caso, mas para um sistema maior,
+// seria melhor ter isso como um membro da classe Sudoku ou um mapa de sessões.
+std::chrono::time_point<std::chrono::high_resolution_clock> game_start_time;
 
 // FUNÇÃO AUXILIAR PARA APLICAR CABEÇALHOS CORS EM TODAS AS RESPOSTAS
 void set_cors_headers(httplib::Response& res) {
@@ -16,6 +22,9 @@ void set_cors_headers(httplib::Response& res) {
 // Inicia um novo jogo e envia o tabuleiro inicial para o cliente.
 void handle_new_game(const httplib::Request& req, httplib::Response& res) {
     set_cors_headers(res);
+
+    // Reinicia o contador de tempo do jogo
+    game_start_time = std::chrono::high_resolution_clock::now();
 
     // Padrão: MEDIUM
     std::string difficulty_str = "medium";
@@ -42,22 +51,27 @@ void handle_new_game(const httplib::Request& req, httplib::Response& res) {
 
     res.set_content(response_body.dump(), "application/json");
     res.status = 200;
+    std::cout << "Novo jogo iniciado. Tempo de jogo resetado." << std::endl;
 }
 
 // carrega o tabuleiro salvo
 void handle_load_game(const httplib::Request& req, httplib::Response& res) {
-    // Adicione as configurações CORS 
+    // Adicione as configurações CORS
     set_cors_headers(res);
 
-    game.load_game("tests/grid.json"); 
+    // Reinicia o contador de tempo do jogo ao carregar
+    game_start_time = std::chrono::high_resolution_clock::now();
+
+    game.load_game("tests/grid.json");
 
     nlohmann::json response_body;
     response_body["board"] = game.get_board(); // Serializa o tabuleiro para JSON
     response_body["status"] = "success";
 
     // Define o conteúdo e tipo da resposta
-    res.set_content(response_body.dump(), "application/json"); 
+    res.set_content(response_body.dump(), "application/json");
     res.status = 200; // 200 = OK
+    std::cout << "Jogo carregado. Tempo de jogo resetado." << std::endl;
 }
 
 // faz um movimento se ele for valido
@@ -82,7 +96,7 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
         error_response["message"] = "Formato de dados JSON invalido ou incompleto. Detalhe: " + std::string(e.what());
         res.set_content(error_response.dump(), "application/json");
         res.status = 400; // Bad Request
-        return; 
+        return;
     }
     catch (const std::exception& e){
         std::cerr << "Erro inesperado em handle_make_move: " << e.what() << std::endl;
@@ -97,7 +111,7 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
     bool move_success = game.make_move(row, col, value);
     bool game_over = false;
     nlohmann::json response_body;
-    response_body["board"] = game.get_board(); // Envia o tabuleiro atualizado 
+    response_body["board"] = game.get_board(); // Envia o tabuleiro atualizado
     response_body["success"] = move_success; // Informa se a jogada foi válida
     response_body["game_over"] = false;
     response_body["status"] = move_success ? "success" : "error";
@@ -107,6 +121,13 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
         response_body["game_over"] = game_over;
         if (game_over) {
             response_body["message"] = "Parabéns! Voce resolveu o Sudoku!";
+            // *** CÁLCULO E EXIBIÇÃO DO TEMPO DO JOGO AQUI ***
+            auto end_game_time = std::chrono::high_resolution_clock::now();
+            auto game_duration = std::chrono::duration_cast<std::chrono::seconds>(end_game_time - game_start_time); // Em segundos
+            std::cout << "========================================" << std::endl;
+            std::cout << "!!! JOGO DE SUDOKU ENCERRADO !!!" << std::endl;
+            std::cout << "Parabéns! Você resolveu o Sudoku em: " << game_duration.count() << " segundos." << std::endl;
+            std::cout << "========================================" << std::endl;
         } else {
             response_body["message"] = "Jogada valida.";
         }
@@ -114,7 +135,7 @@ void handle_make_move(const httplib::Request& req, httplib::Response& res){
         response_body["message"] = "Jogada invalida. Verifique regras do Sudoku ou celula pre-definida.";
     }
 
-    res.set_content(response_body.dump(), "application/json"); 
+    res.set_content(response_body.dump(), "application/json");
     res.status = 200; // Sempre retorna 200 para facilitar o tratamento no frontend
 }
 
@@ -127,10 +148,10 @@ int main(){
 
     // cria a rota POST para new_game
     svr.Post("/api/new_game", handle_new_game);
-    
+
     // cria a rota POST para make_move
     svr.Post("/api/make_move", handle_make_move);
-    
+
 
     // localiza a pasta com a interface web do jogo
     svr.set_base_dir("./frontend");
@@ -140,12 +161,24 @@ int main(){
     std::cout << "Access the web interface at: http://localhost:8080/index.html" << std::endl;
     std::cout << "Press Ctrl+C to stop the server." << std::endl;
 
+    // O tempo de uptime do servidor geral continua aqui, se desejar
+    // auto server_start_time = std::chrono::high_resolution_clock::now(); // Exemplo, se quiser o uptime total do servidor
+
     // The server will listen on all network interfaces (0.0.0.0) on port 8080.
     // If the port is in use or there's another error, listen() will return false.
     if (!svr.listen("0.0.0.0", 8080)) {
         std::cerr << "Error: Could not start the server on port 8080. The port might already be in use." << std::endl;
+        // Se quiser o uptime do servidor até a falha:
+        // auto server_end_time = std::chrono::high_resolution_clock::now();
+        // auto server_duration = std::chrono::duration_cast<std::chrono::milliseconds>(server_end_time - server_start_time);
+        // std::cout << "Server ran for: " << server_duration.count() << " milliseconds before exiting." << std::endl;
         return 1; // Return an error code
     }
+
+    // Se quiser o uptime do servidor após ser parado (Ctrl+C):
+    // auto server_end_time = std::chrono::high_resolution_clock::now();
+    // auto server_duration = std::chrono::duration_cast<std::chrono::milliseconds>(server_end_time - server_start_time);
+    // std::cout << "Server stopped. Total uptime: " << server_duration.count() << " milliseconds." << std::endl;
 
     return 0;
 }
