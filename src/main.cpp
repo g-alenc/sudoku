@@ -3,11 +3,8 @@
 #include "../include/json.hpp"
 #include <iostream>
 #include <string>
-<<<<<<< HEAD
 #include <chrono>
-=======
 #include <filesystem>
->>>>>>> feature/interface
 
 Sudoku game;
 
@@ -79,11 +76,9 @@ void handle_new_game(const httplib::Request& req, httplib::Response& res) {
 void handle_load_game(const httplib::Request& req, httplib::Response& res) {
     set_cors_headers(res);
 
-<<<<<<< HEAD
     game_start_time = std::chrono::high_resolution_clock::now();
 
     game.load_game("tests/grid.json");
-=======
     std::string game_name;
     if (!req.body.empty()) {
         try {
@@ -100,7 +95,6 @@ void handle_load_game(const httplib::Request& req, httplib::Response& res) {
             return;
         }
     }
->>>>>>> feature/interface
 
     if (game_name.empty()) {
         nlohmann::json error_response;
@@ -129,12 +123,9 @@ void handle_load_game(const httplib::Request& req, httplib::Response& res) {
     response_body["status"] = "success";
 
     res.set_content(response_body.dump(), "application/json");
-<<<<<<< HEAD
     res.status = 200; // 200 = OK
     std::cout << "Jogo carregado. Tempo de jogo resetado." << std::endl;
-=======
     res.status = 200;
->>>>>>> feature/interface
 }
 
 // faz um movimento se ele for valido
@@ -294,16 +285,12 @@ int main(){
 
     // cria a rota POST para make_move
     svr.Post("/api/make_move", handle_make_move);
-<<<<<<< HEAD
-
-=======
     
     // cria a rota POST para save_game
     svr.Post("/api/save_game", handle_save_game);
 
     // cria a rota GET para listar jogos salvos
     svr.Get("/api/list_games", handle_list_games);
->>>>>>> feature/interface
 
     // localiza a pasta com a interface web do jogo
     svr.set_base_dir("./frontend");
