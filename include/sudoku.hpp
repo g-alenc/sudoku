@@ -21,6 +21,8 @@ struct Move {
 };
 
 
+using namespace std;
+
 // A classe 'Sudoku' orquestra o jogo, gerenciando o tabuleiro,
 // a lógica de vitória e a interação com o usuário.
 class Sudoku{
@@ -33,6 +35,8 @@ class Sudoku{
 
     public:
     Board board;
+
+    string board_name;
 
     // ----------- Construtores -----------
     // Construtor: gera um novo Sudoku com uma dificuldade.
@@ -49,9 +53,9 @@ class Sudoku{
     bool persist_grid(string path);
 
     //salva o estado atual do jogo
-    bool save_game(const std::string& filename) const;
+    bool save_game(const string& filename) const;
     
-    bool load_game(const std::string& filename);
+    bool load_game(const string& filename);
 
     // gera um novo jogo de acordo com uma dificuldade
     bool new_game(int diff);
@@ -84,7 +88,7 @@ class Sudoku{
     void start_game_loop();
 
     // Pede e retorna uma jogada do usuário.
-    std::pair<std::pair<int, int>, int> get_move();
+    pair<pair<int, int>, int> get_move();
 
     // Aplica uma jogada do usuário ao tabuleiro.
     bool make_move(int x, int y, int value);

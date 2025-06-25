@@ -6,9 +6,13 @@ const loadGameButton = document.getElementById('loadGameButton');
 const showNewGameOptionsButton = document.getElementById('showNewGameOptionsButton');
 const newGameOptions = document.getElementById('newGameOptions');
 const difficultySlider = document.getElementById('difficultySlider');
+const gameNameInput = document.getElementById('gameNameInput');
 const startNewGameButton = document.getElementById('startNewGameButton');
 const backToMenuButton = document.getElementById('backToMenuButton');
 const sudokuBoardElement = document.getElementById('sudoku-board');
+const gameControls = document.getElementById('gameControls');
+const saveGameButton = document.getElementById('saveGameButton');
+const backToMenuFromGameButton = document.getElementById('backToMenuFromGameButton');
 const messageElement = document.getElementById('message');
 
 // Mapeamento de dificuldade para valores de slider
@@ -19,21 +23,22 @@ const difficulties = ['easy', 'medium', 'hard', 'master']; // min=0, max=3
 function showMenu() {
     mainMenu.style.display = 'block';
     newGameOptions.style.display = 'none';
-    sudokuBoardElement.style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'none';
     messageElement.textContent = ''; // Limpa mensagens anteriores
+    gameNameInput.value = ''; // Limpa o nome do jogo
 }
 
 function showNewGameDifficultyOptions() {
     mainMenu.style.display = 'none';
     newGameOptions.style.display = 'block';
-    sudokuBoardElement.style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'none';
     messageElement.textContent = '';
 }
 
 function showBoard() {
     mainMenu.style.display = 'none';
     newGameOptions.style.display = 'none';
-    sudokuBoardElement.style.display = 'grid'; // 'grid' ou 'block' dependendo do seu CSS para o tabuleiro
+    document.getElementById('gameContainer').style.display = 'flex';
     messageElement.textContent = '';
 }
 
@@ -41,6 +46,12 @@ function showBoard() {
 
 // Função para buscar um novo jogo do backend com dificuldade
 async function fetchNewGame(difficulty) {
+    const gameName = gameNameInput.value.trim();
+    if (!gameName) {
+        messageElement.textContent = 'Por favor, digite um nome para o jogo.';
+        return;
+    }
+
     messageElement.textContent = `Carregando novo jogo (${difficulty})...`;
     try {
         const response = await fetch(`${BACKEND_URL}/api/new_game`, {
@@ -48,7 +59,10 @@ async function fetchNewGame(difficulty) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ difficulty })
+            body: JSON.stringify({ 
+                difficulty,
+                gameName
+            })
         });
 
         if (!response.ok) {
@@ -74,14 +88,15 @@ async function fetchNewGame(difficulty) {
 }
 
 // Função para carregar um jogo salvo do backend
-async function fetchLoadGame() {
+async function fetchLoadGame(gameName) {
     messageElement.textContent = "Carregando jogo salvo...";
     try {
         const response = await fetch(`${BACKEND_URL}/api/load_game`, {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ gameName })
         });
 
         if (!response.ok) {
@@ -102,6 +117,105 @@ async function fetchLoadGame() {
 
     } catch (error) {
         console.error('Erro ao carregar jogo salvo:', error);
+        messageElement.textContent = `Erro ao conectar com o servidor: ${error.message}. O servidor está rodando?`;
+    }
+}
+
+// Função para listar jogos salvos
+async function fetchListGames() {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/list_games`);
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.games || [];
+    } catch (error) {
+        console.error('Erro ao listar jogos:', error);
+        messageElement.textContent = `Erro ao listar jogos salvos: ${error.message}`;
+        return [];
+    }
+}
+
+// Função para mostrar o diálogo de carregar jogo
+async function showLoadGameDialog() {
+    const savedGames = await fetchListGames();
+    
+    if (savedGames.length === 0) {
+        messageElement.textContent = "Nenhum jogo salvo encontrado.";
+        return;
+    }
+
+    // Esconde o menu principal
+    mainMenu.style.display = 'none';
+
+    // Cria o diálogo de carregar jogo se não existir
+    let loadGameDialog = document.getElementById('loadGameDialog');
+    if (!loadGameDialog) {
+        loadGameDialog = document.createElement('div');
+        loadGameDialog.id = 'loadGameDialog';
+        loadGameDialog.innerHTML = `
+            <h2>Carregar Jogo Salvo</h2>
+            <div id="savedGamesList"></div>
+            <button id="backToMenuFromLoadButton">Voltar ao Menu</button>
+        `;
+        document.querySelector('.container').appendChild(loadGameDialog);
+
+        // Adiciona evento ao botão de voltar
+        document.getElementById('backToMenuFromLoadButton').addEventListener('click', () => {
+            loadGameDialog.style.display = 'none';
+            showMenu();
+        });
+    }
+
+    // Atualiza a lista de jogos salvos
+    const savedGamesList = document.getElementById('savedGamesList');
+    savedGamesList.innerHTML = '';
+    savedGames.forEach(gameName => {
+        const gameButton = document.createElement('button');
+        gameButton.textContent = gameName;
+        gameButton.classList.add('saved-game-button');
+        gameButton.addEventListener('click', () => {
+            fetchLoadGame(gameName);
+            loadGameDialog.style.display = 'none';
+        });
+        savedGamesList.appendChild(gameButton);
+    });
+
+    // Mostra o diálogo
+    loadGameDialog.style.display = 'block';
+}
+
+// Função para salvar o jogo atual no backend
+async function fetchSaveGame() {
+    messageElement.textContent = "Salvando jogo...";
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/save_game`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                gameName: gameNameInput.value.trim()
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Erro HTTP: ${response.status} - ${errorData.message || 'Erro desconhecido ao salvar jogo'}`);
+        }
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            messageElement.textContent = "Jogo salvo com sucesso!";
+            setTimeout(() => messageElement.textContent = '', 3000);
+        } else {
+            messageElement.textContent = `Erro do servidor: ${data.message || 'Falha ao salvar jogo.'}`;
+        }
+
+    } catch (error) {
+        console.error('Erro ao salvar jogo:', error);
         messageElement.textContent = `Erro ao conectar com o servidor: ${error.message}. O servidor está rodando?`;
     }
 }
@@ -188,8 +302,16 @@ function enableCellInput() {
 
     document.addEventListener('keydown', async function(event) {
         if (!selectedCell) return;
-        // Permite apenas números 0-9 e Esc
+        // Permite apenas números 0-9, Esc e Backspace
         if (event.key === 'Escape') {
+            selectedCell.classList.remove('editing');
+            selectedCell = null;
+            return;
+        }
+        if (event.key === 'Backspace') {
+            const row = parseInt(selectedCell.dataset.row);
+            const col = parseInt(selectedCell.dataset.col);
+            await fetchMakeMove(row, col, 0);
             selectedCell.classList.remove('editing');
             selectedCell = null;
             return;
@@ -213,11 +335,11 @@ document.addEventListener('DOMContentLoaded', () => {
     enableCellInput();
 });
 
-// Botão "Carregar Jogo Salvo"
-loadGameButton.addEventListener('click', fetchLoadGame);
-
-// Botão "Novo Jogo" (no menu principal)
+// Adiciona os event listeners aos botões
+loadGameButton.addEventListener('click', showLoadGameDialog);
 showNewGameOptionsButton.addEventListener('click', showNewGameDifficultyOptions);
+backToMenuButton.addEventListener('click', showMenu);
+backToMenuFromGameButton.addEventListener('click', showMenu);
 
 // Botão "Iniciar Novo Jogo" (nas opções de dificuldade)
 startNewGameButton.addEventListener('click', () => {
@@ -226,5 +348,5 @@ startNewGameButton.addEventListener('click', () => {
     fetchNewGame(selectedDifficulty);
 });
 
-// Botão "Voltar ao Menu"
-backToMenuButton.addEventListener('click', showMenu);
+// Botão "Salvar Jogo"
+saveGameButton.addEventListener('click', fetchSaveGame);

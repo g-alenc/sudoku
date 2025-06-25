@@ -17,6 +17,10 @@
 
         <div id="newGameOptions" style="display: none;">
             <h2>Escolha a Dificuldade</h2>
+            <div class="game-name-container">
+                <label for="gameNameInput">Nome do Jogo:</label>
+                <input type="text" id="gameNameInput" placeholder="Digite o nome do jogo" required>
+            </div>
             <div class="difficulty-slider-container">
                 <input type="range" id="difficultySlider" min="0" max="3" value="1">
                 <div class="difficulty-labels">
@@ -30,8 +34,15 @@
             <button id="backToMenuButton">Voltar ao Menu</button>
         </div>
 
-        <div id="sudoku-board" class="sudoku-board" style="display: none;">
+        <div id="gameContainer" style="display: none;">
+            <div id="sudoku-board" class="sudoku-board">
             </div>
+
+            <div id="gameControls">
+                <button id="saveGameButton">Salvar Jogo</button>
+                <button id="backToMenuFromGameButton">Voltar ao Menu</button>
+            </div>
+        </div>
 
         <p id="message"></p>
     </div>
