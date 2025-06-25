@@ -41,9 +41,9 @@ Um projeto desenvolvido em C++ para disciplina Programação e Desenvolvimento d
     make
     ```
 
-3. Execute o programa (ajuste o nome do executável conforme o Makefile, por exemplo, `my_program`):
+3. Execute o programa:
     ```bash
-    ./my_program
+    ./build/my_program
     ```
 
 4. Para limpar os arquivos de compilação, utilize:
